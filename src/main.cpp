@@ -8,6 +8,12 @@
 
 using namespace std;
 
+/**
+ * Simple simulation using YAWNS:
+ * A network of p processors - fully connected
+ * Ea proc when receive a msg, randomly select te next proc to send the package to.
+ * Initially, ea proc has some x number of packets
+ */
 int main(int argc, char* argv[])
 {
 	//Init MPI
@@ -25,10 +31,11 @@ int main(int argc, char* argv[])
 	srand(seed);
 	
 	//Create the exec
-	SimExec se (p, rank);
+	SimExec se(p, rank);
 	se.run();
 	
-	printf("\nRank %d successfully finished.\n", rank	);
+	printf("\nRank %d successfully finished.\n", rank);
+	MPI_Barrier(MPI_COMM_WORLD);
 	
 	MPI_Finalize();
 	return 0; //safe and sound

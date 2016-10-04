@@ -14,7 +14,7 @@ LDIR = lib
 CC = mpic++
 
 #Flags: -I => spec path gcc should look into for deps
-CFLAGS = -I$(IDIR) -g
+CFLAGS = -I$(IDIR) -g -std=gnu++0x
 
 #Spec library
 LIBS = -lm
@@ -31,8 +31,14 @@ $(ODIR)/%.o: $(SDIR)/%.cpp $(DEPS)
 _OBJ = Event.o SimExec.o main.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 	
+_OBJT = Event.o test/TestQ.o
+OBJT = $(patsubst %,$(ODIR)/%,$(_OBJT))
+		
 sim: $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $(OBJ)
 	
+test: $(OBJT)
+	$(CC) $(CFLAGS) -o $@ $(OBJT)
+	
 clean:
-	rm -f $(ODIR)/*.o *~ core $(IDIR)/*~ $(SDIR)/*~ $(IDIR)/*.gch tw testQ testHeap collComm foo testPosMsg testAntiMsg testConstructLPs bar
+	rm -f $(ODIR)/*.o *~ core $(IDIR)/*~ $(SDIR)/*~ $(IDIR)/*.gch tw testQ testHeap collComm foo testPosMsg testAntiMsg testConstructLPs bar sim test

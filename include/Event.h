@@ -6,10 +6,12 @@ using namespace std;
 class Event
 {
 	int timestamp;
+	int remainStopCt;
 	
   public:
-	Event (int t);
+	Event (int ts, int stopCount);
 	int getTimestamp();
+	int getRemainStopCount();
 };
 
 #endif

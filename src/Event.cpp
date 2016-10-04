@@ -2,12 +2,18 @@
 
 using namespace std;
 
-Event::Event(int t)
+Event::Event(int ts, int remStopCt)
 {
-	Event::timestamp = t;
+	Event::timestamp = ts;
+	Event::remainStopCt = remStopCt;
 }
 
 int Event::getTimestamp()
 {
 	return timestamp;
+}
+
+int Event::getRemainStopCount()
+{
+	return remainStopCt;
 }
