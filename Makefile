@@ -37,6 +37,9 @@ OBJT = $(patsubst %,$(ODIR)/%,$(_OBJT))
 sim: $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $(OBJ)
 	
+traffic: $(ODIR)/TrafficGen.o
+	$(CC) $(CFLAGS) -o $@ $(ODIR)/TrafficGen.o
+
 test: $(OBJT)
 	$(CC) $(CFLAGS) -o $@ $(OBJT)
 	

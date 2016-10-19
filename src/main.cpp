@@ -1,12 +1,14 @@
-#include <stdio.h> //For printf
+#include <stdio.h> //For printf, NULL
 #include <cstdlib> //For rand gen
 #include "mpi.h"   //For MPI stuff
+#include <time.h> //for time
+#include <chrono>
 
 //My stuff
 #include "Event.h"
 #include "SimExec.h"
 
-using namespace std;
+using namespace std::chrono;
 
 /**
  * Simple simulation using YAWNS:
@@ -24,19 +26,31 @@ int main(int argc, char* argv[])
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &p);
 	
-	printf("\nRank %d successfully set up system of %d procs", rank, p);
-	
 	//Set up ran
-	int seed = rank; //TODO: ea proc has own seed?
-	srand(seed);
+	//TODO: ea proc has own seed?
+	srand(time(NULL) + rank);
 	
+	//Start timer
+	MPI_Barrier(MPI_COMM_WORLD);
+	auto begin = std::chrono::high_resolution_clock::now();
+
 	//Create the exec
 	SimExec se(p, rank);
 	se.run();
-	
-	printf("\nRank %d successfully finished.\n", rank);
-	MPI_Barrier(MPI_COMM_WORLD);
-	
+
+	int l_total = se.getTotalEvent();
+	int gl_total;
+	MPI_Reduce(&l_total, &gl_total, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+	//printf("\nRank %d successfully finished with %d.\n", rank, l_total);
+
+	if (rank ==0)
+	{
+		auto end = std::chrono::high_resolution_clock::now();
+    	double time_secs = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count(); 
+		printf("\n*** TOTAL events: %d; time = %.5f ms; parallel = %.5f event/ms\n", 
+				gl_total, time_secs, gl_total / time_secs);
+	}
+
 	MPI_Finalize();
 	return 0; //safe and sound
 }

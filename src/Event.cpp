@@ -17,3 +17,15 @@ int Event::getRemainStopCount()
 {
 	return remainStopCt;
 }
+
+void Event::addStop(int i)
+{
+	stops.push(i);
+}
+
+int Event::nextStop()
+{
+	int next = stops.front();
+	stops.front();
+	return next;
+}
