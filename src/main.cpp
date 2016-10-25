@@ -5,8 +5,7 @@
 #include <chrono>
 
 //My stuff
-#include "Event.h"
-#include "SimExec.h"
+#include "SE.h"
 
 using namespace std::chrono;
 
@@ -30,25 +29,28 @@ int main(int argc, char* argv[])
 	//TODO: ea proc has own seed?
 	srand(time(NULL) + rank);
 	
+
+	//Create the exec
+	int gridSize = 20;
+	SE se(p, rank, gridSize);
+
 	//Start timer
 	MPI_Barrier(MPI_COMM_WORLD);
 	auto begin = std::chrono::high_resolution_clock::now();
 
-	//Create the exec
-	SimExec se(p, rank);
 	se.run();
 
-	int l_total = se.getTotalEvent();
-	int gl_total;
-	MPI_Reduce(&l_total, &gl_total, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+	//int l_total = se.getTotalEvent();
+	//int gl_total;
+	//MPI_Reduce(&l_total, &gl_total, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
 	//printf("\nRank %d successfully finished with %d.\n", rank, l_total);
 
 	if (rank ==0)
 	{
 		auto end = std::chrono::high_resolution_clock::now();
-    	double time_secs = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count(); 
-		printf("\n*** TOTAL events: %d; time = %.5f ms; parallel = %.5f event/ms\n", 
-				gl_total, time_secs, gl_total / time_secs);
+    	double time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count(); 
+		printf("\n***Time = %.5f ms;\n", 
+				time_ms);
 	}
 
 	MPI_Finalize();

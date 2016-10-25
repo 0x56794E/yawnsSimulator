@@ -166,8 +166,6 @@ void SimExec::handleEvent(Event* e)
 	//	printf("Last stop reach. Do nothing\n");
 }
 
-
-
 void SimExec::genPackets()
 {
 	int ts, stops;

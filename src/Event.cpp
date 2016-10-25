@@ -2,10 +2,9 @@
 
 using namespace std;
 
-Event::Event(int ts, int remStopCt)
+Event::Event(int ts)
 {
 	Event::timestamp = ts;
-	Event::remainStopCt = remStopCt;
 }
 
 int Event::getTimestamp()
@@ -15,7 +14,7 @@ int Event::getTimestamp()
 
 int Event::getRemainStopCount()
 {
-	return remainStopCt;
+	return stops.size();
 }
 
 void Event::addStop(int i)
@@ -23,9 +22,19 @@ void Event::addStop(int i)
 	stops.push(i);
 }
 
+void Event::setTimestamp(int newTs)
+{
+	timestamp = newTs;
+}
+
 int Event::nextStop()
 {
 	int next = stops.front();
-	stops.front();
+	stops.pop();
 	return next;
+}
+
+int Event::peekNextStop()
+{
+	return stops.front();
 }

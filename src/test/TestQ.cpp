@@ -6,7 +6,7 @@
 
 //My stuff
 #include "Event.h"
-#include "util/EventComparator.h"
+#include "EventComparator.h"
 
 
 using namespace std;

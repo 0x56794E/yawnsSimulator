@@ -14,7 +14,7 @@
  * <startTime> <numStops> <stop0> <stop1> ... <stopn>
  */
 
-#include "utils/TopologyUtil.h"
+#include "TopologyUtils.h"
 #include <iostream> //for file ops
 #include <fstream> //file ops
 
@@ -29,10 +29,10 @@
  */
 void loadLP(int rank, int p, int gridSize, map<int, LP*> &lpMap, int &minRow, int &maxRow, int &minCol, int &maxCol)
 {
-	string id;
+	int id;
 	ifstream inFile (to_string(rank) + "_" + to_string(p) + "_lps_" + to_string(gridSize));
 	
-	if (inFiile.is_open())
+	if (inFile.is_open())
 	{
 		while (inFile >> minRow >> maxRow >> minCol >> maxCol)
 		{
@@ -46,14 +46,11 @@ void loadLP(int rank, int p, int gridSize, map<int, LP*> &lpMap, int &minRow, in
 				}
 			}
 		}	
+
+		inFile.close();
 	}	
 }
 
-
-string makeLPID(int row, int col)
-{
-	return to_string(row) + "_" + to_string(col);
-}
 
 int coorToId(int row, int col, int gridSize)
 {
@@ -64,4 +61,19 @@ void idToCoor(int id, int gridSize, int &row, int &col)
 {
 	row = id / gridSize;
 	col = id % gridSize;
+}
+
+int getRank(int lpId)
+{
+	int row, col;
+	idToCoor(lpId, 100, row, col);
+	
+	if (row < 50) //rank 0 or 1
+	{
+		return col < 50 ? 0 : 1;
+ 	}
+	else //rank 2 or 3
+	{
+		return col < 50 ? 3 : 2;
+	}
 }

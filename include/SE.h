@@ -2,8 +2,8 @@
 #define SE_H
 
 #include "Event.h"
+#include "LP.h"
 
-#include <map>
 #include <string> 
 
 using namespace std;
@@ -21,23 +21,20 @@ class SE
 	int* msgCount; //Number of msgs sent to ea proc in current epoch
 
 	//LPs
-	map<int, LP*> lpMap; 
+	LPMap lpMap; 
 	int minRow;
 	int maxRow;
 	int minCol;
 	int maxCol;
 
 	//Methods
-	void receiveMsg(int);
-	void genPackets(); //gen initial packets. Diff with ea run
-	void loadPackets(); //load packets. Same with ea run
-	void loadLPs(); //load LPs from file
+	int compLBTS(); //Determine LBTS for current iteration/epoch
+	void receiveMsgs();
+	int done(); //true if all LPs on this proc are done
 
   public:
-  	SE(int lpCount, int rank);
+  	SE(int lpCount, int rank, int gridSize);
   	void run(); //start event processing
-	int getTotalEvent();
-	void sendMessage(); //send messages; will determine if inter-processor communication is needed; if yes, will be put in outbox; else schedule directly on lp's fel
 };
 
 #endif
