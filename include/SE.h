@@ -35,6 +35,7 @@ class SE
   public:
   	SE(int lpCount, int rank, int gridSize);
   	void run(); //start event processing
+	int getTotalProcessedEvent(); //total number of events processed by all LPs on this SE
 };
 
 #endif

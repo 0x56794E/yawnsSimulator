@@ -18,25 +18,25 @@ CFLAGS = -I$(IDIR) -g -std=gnu++0x
 
 #Spec library
 LIBS = -lm
-	
+
 #list .h files
 _DEPS = Event.h LP.h TrafficLoader.h TopologyUtils.h EventComparator.h Communicator.h SE.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
-	
+
 #spec rules for making .o files
 $(ODIR)/%.o: $(SDIR)/%.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
-	
+
 #list obj files	
 _OBJ = Event.o LP.o TopologyUtils.o TrafficLoader.o Communicator.o SE.o main.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
-	
+
 _OBJT = Event.o test/TestQ.o
 OBJT = $(patsubst %,$(ODIR)/%,$(_OBJT))
 
 _TRAFF_OBJ = Event.o LP.o TopologyUtils.o TrafficLoader.o
 TRAFF_OBJ = $(patsubst %,$(ODIR)/%,$(_TRAFF_OBJ))
-		
+
 sim: $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $(OBJ)
 
@@ -48,6 +48,7 @@ trafficGen: $(ODIR)/TrafficGen.o
 
 test: $(OBJT)
 	$(CC) $(CFLAGS) -o $@ $(OBJT)
-	
+
 clean:
-	rm -f $(ODIR)/*.o  $(ODIR)/test/* *~ core $(IDIR)/*~ $(SDIR)/*~ $(IDIR)/*.gch tw testQ testHeap collComm foo testPosMsg testAntiMsg testConstructLPs bar sim test traffic
+	rm -f $(ODIR)/*.o  $(ODIR)/test/* *~ core $(IDIR)/*~ $(SDIR)/*~ $(IDIR)/*.gch tw testQ testHeap collComm foo testPosMsg testAntiMsg testConstructLPs bar sim test trafficGen
+

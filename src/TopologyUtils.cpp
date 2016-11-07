@@ -39,7 +39,7 @@ void loadLP(int rank, int p, int gridSize, map<int, LP*> &lpMap, int &minRow, in
 			//Construct all LPs with coors in given range
 			for (int row = minRow; row <= maxRow; ++row)
 			{
-				for (int col = minCol; col < maxCol; ++col)
+				for (int col = minCol; col <= maxCol; ++col)
 				{
 					id = coorToId(row, col, gridSize); 
 					lpMap[id] = new LP(id);

@@ -131,3 +131,14 @@ int SE::done()
 	}
 	return done;
 }
+
+int SE::getTotalProcessedEvent()
+{
+	int sum = 0;
+	for (LPMap::const_iterator it = lpMap.begin(); it != lpMap.end(); ++it)
+	{
+		sum += it->second->getTotalProcessedEvent();
+	}
+	return sum;
+}
+

@@ -22,7 +22,8 @@ class LP
 	
   public:
   	LP(int id);
-	int getEventCount();
+	int getTotalProcessedEvent();
+	int getFELSize();
 	void handleEvent(Event*, LPMap lpMap);
 	void scheduleEvent(Event*);
 	int done();

@@ -11,13 +11,20 @@ LP::LP(int id)
 	LP::id = id;
 }
 
-int LP::getTotalEvent()
+int LP::getTotalProcessedEvent()
 {
 	return totalEvent;
 }
 
+void LP::scheduleEvent(Event* event)
+{
+	fel.push(event);
+}
+
 void LP::handleEvent(Event* event, LPMap lpMap)
 {
+	totalEvent++;
+
 	//me - the one who's processing this event;
 	//Don't need this value. Call to remove it from queue. TODO: better name?
 	event->nextStop(); 
@@ -30,12 +37,7 @@ void LP::handleEvent(Event* event, LPMap lpMap)
 	}
 }
 
-void LP::scheduleEvent(Event* event)
-{
-	fel.push(event);
-}
-
-int LP::getEventCount()
+int LP::getFELSize()
 {
 	return fel.size();
 }

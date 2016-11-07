@@ -21,8 +21,6 @@ using namespace std;
 
 void loadTrafficMultiForGrid(int rank, int p, int gridSize, map<int, LP*> &lpMap)
 {
-	if (rank == 0)
-{
 	ifstream infile (to_string(rank) + "_" + to_string(p) + "_traffic_" + to_string(gridSize));
 	int stopCount, startTime, row, col, eCount = 1;
 	
@@ -37,19 +35,16 @@ void loadTrafficMultiForGrid(int rank, int p, int gridSize, map<int, LP*> &lpMap
 		for (int stop = 0; stop < stopCount; ++stop)
 		{
 			iss >> row >> col;
-			cout << rank << " pushing to queue " << coorToId(row, col, gridSize) << "\n";
 			event->addStop(coorToId(row, col, gridSize));
 		}
 
 		
 		//schedule event on appropriate LP
 		int nextStop = event->peekNextStop();
-		cout << " (rank=" << rank << "; lpid=" << nextStop << ") has " << lpMap[nextStop]->getEventCount() << " events of total " << eCount << " events\n";
 		lpMap[nextStop]->scheduleEvent(event);
 		++eCount;
 	}
 
 	printf("Rank %d finished loading traffic\n", rank);
 	infile.close();
-}
 }
