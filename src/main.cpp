@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
 	srand(time(NULL) + rank);
 
 	//Create the exec
-	int gridSize = 20;
+	int gridSize = 100;
 	SE se(p, rank, gridSize);
 
 	//Start timer
