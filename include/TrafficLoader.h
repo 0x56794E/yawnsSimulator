@@ -9,6 +9,7 @@
 
 using namespace std;
 
-void loadTrafficMultiForGrid(int rank, int p, int gridSize, map<int, LP*> &lpMap);
+void loadTrafficForGrid(int intendedPCount, int gridSize, map<int, LP*> &lpMap); //used for single-proc run
+void loadTrafficForGrid(int rank, int p, int gridSize, map<int, LP*> &lpMap);   //used for mult-proc run
 
 #endif
