@@ -19,7 +19,14 @@
 
 using namespace std;
 
-void loadTrafficMultiForGrid(int rank, int p, int gridSize, map<int, LP*> &lpMap)
+//parallelPCount: the num of proc used when traffic was gen
+void loadTrafficForGrid(int intendedPCount, int gridSize, map<int, LP*> &lpMap)
+{
+	for (int rank = 0; rank < intendedPCount; ++rank)
+		loadTrafficForGrid(rank, intendedPCount, gridSize, lpMap);
+}
+
+void loadTrafficForGrid(int rank, int p, int gridSize, map<int, LP*> &lpMap)
 {
 	ifstream infile (to_string(rank) + "_" + to_string(p) + "_traffic_" + to_string(gridSize));
 	int stopCount, startTime, row, col, eCount = 1;

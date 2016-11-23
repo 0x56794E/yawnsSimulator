@@ -30,27 +30,45 @@
 void loadLP(int rank, int p, int gridSize, map<int, LP*> &lpMap, int &minRow, int &maxRow, int &minCol, int &maxCol)
 {
 	int id;
-	ifstream inFile (to_string(rank) + "_" + to_string(p) + "_lps_" + to_string(gridSize));
-	
-	if (inFile.is_open())
+	if (p == 1) //If there's only ONE proc => no need to read from lp file. all lps on same proc
 	{
-		while (inFile >> minRow >> maxRow >> minCol >> maxCol)
-		{
-			//Construct all LPs with coors in given range
-			for (int row = minRow; row <= maxRow; ++row)
-			{
-				for (int col = minCol; col <= maxCol; ++col)
-				{
-					id = coorToId(row, col, gridSize); 
-					lpMap[id] = new LP(id);
-				}
-			}
-		}	
+		minRow = 0;
+		minCol = 0;
+		maxRow = gridSize - 1;
+		maxCol = gridSize - 1;
 
-		inFile.close();
+		for (int row = 0; row < gridSize; ++row)
+		{
+			for (int col = 0; col < gridSize; ++col)
+			{
+				id = coorToId(row, col, gridSize); 
+				lpMap[id] = new LP(id);
+			}
+		}
+	}
+	else
+	{
+		ifstream inFile (to_string(rank) + "_" + to_string(p) + "_lps_" + to_string(gridSize));
+	
+		if (inFile.is_open())
+		{
+			while (inFile >> minRow >> maxRow >> minCol >> maxCol)
+			{
+				//Construct all LPs with coors in given range
+				for (int row = minRow; row <= maxRow; ++row)
+				{
+					for (int col = minCol; col <= maxCol; ++col)
+					{
+						id = coorToId(row, col, gridSize); 
+						lpMap[id] = new LP(id);
+					}
+				}
+			}	
+
+			inFile.close();
+		}
 	}	
 }
-
 
 int coorToId(int row, int col, int gridSize)
 {

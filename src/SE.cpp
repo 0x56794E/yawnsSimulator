@@ -8,6 +8,7 @@
 #include "Communicator.h"
 
 const int MAX_INT = std::numeric_limits<int>::max();
+const int INTENDED_P_COUNT = 4;
 
 /******************
  * PUBLIC members *
@@ -26,7 +27,10 @@ SE::SE(int lpCount, int rank, int gridSize)
 		msgCount[i] = 0;
 
 	//load initial packets/msgs for ea LP here
-	loadTrafficMultiForGrid(rank, lpCount, gridSize, lpMap);
+	if (lpCount == 1)
+		loadTrafficForGrid(INTENDED_P_COUNT, gridSize, lpMap);
+	else
+		loadTrafficForGrid(rank, lpCount, gridSize, lpMap);
 }
 
 /**
@@ -93,6 +97,7 @@ int SE::compLBTS()
 
 	//Globally determine LBTS
 	MPI_Allreduce(&local_lbts, &global_lbts, 1, MPI_INT, MPI_MIN, MPI_COMM_WORLD);
+	//printf("lbts = %d\n", global_lbts);
 
 	return global_lbts;	
 }
@@ -137,8 +142,10 @@ int SE::getTotalProcessedEvent()
 	int sum = 0;
 	for (LPMap::const_iterator it = lpMap.begin(); it != lpMap.end(); ++it)
 	{
+		//printf("\tlp %d has %d; SUM = %d\n", it->first, it->second->getTotalProcessedEvent(), sum);
 		sum += it->second->getTotalProcessedEvent();
 	}
+	printf("Rank %d has %d\n", rank, sum);
 	return sum;
 }
 

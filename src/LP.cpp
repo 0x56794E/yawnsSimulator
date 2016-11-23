@@ -9,6 +9,7 @@ const int LA = 10;
 LP::LP(int id)
 {
 	LP::id = id;
+	LP::totalEvent = 0;
 }
 
 int LP::getTotalProcessedEvent()

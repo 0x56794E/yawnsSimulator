@@ -14,12 +14,15 @@
 
 using namespace std;
 
+const int MAX_PACKET_CT = 3; //max num of packets
+const int MAX_STOP_CT = 3; //max num of stops
+
 /**
  * Generate traffic for grid topology
  *
  * input: p the number of processors and grid size
  */
-void genTrafficMultiForGrid(int p, int gridSize, int maxPacketCount, int maxStopCount)
+void genTrafficMultiForGrid(int p, int gridSize)
 {
 	int minRow, maxRow, minCol, maxCol;
 	srand(time(NULL));
@@ -44,11 +47,11 @@ void genTrafficMultiForGrid(int p, int gridSize, int maxPacketCount, int maxStop
 				for (int col = minCol; col <= maxCol; ++col)
 				{
 					//Gen num of packets
-					numPacket = rand() % maxPacketCount;
+					numPacket = rand() % MAX_PACKET_CT;
 
 					for (int i = 0; i < numPacket; ++i)
 					{
-						numStop = rand() % maxStopCount + 2;
+						numStop = rand() % MAX_STOP_CT + 2;
 						crow = row;
 						ccol = col;
 				
@@ -87,7 +90,7 @@ void genTrafficMultiForGrid(int p, int gridSize, int maxPacketCount, int maxStop
  * Use for simple case where ea LP rep one node.
  * and fully connected topology is assumed.
  */
-void genTrafficSimple(int maxPacketCount, int maxStopCount)
+void genTrafficSimple()
 {
  	int lpCount = 2; //input params
 	srand(time(NULL));
@@ -100,12 +103,12 @@ void genTrafficSimple(int maxPacketCount, int maxStopCount)
 	
 		if (myfile.is_open())
 		{
-			numPackets = rand() % maxPacketCount;
+			numPackets = rand() % MAX_PACKET_CT;
 
 			for (int j = 0; j < numPackets; ++j)
 			{
 				startTs = rand();
-				numStops = rand() % maxStopCount + 1;
+				numStops = rand() % MAX_STOP_CT + 1;
 
 				myfile << startTs << " " << numStops;
 
@@ -130,15 +133,6 @@ void genTrafficSimple(int maxPacketCount, int maxStopCount)
 
 int main(int argc, char* argv[])
 {	
-	if (argc != 4)
-	{
-		cout << "Usage: ./trafficGen <Grid Size> <max packet count> <max stop count>\n";
-		return 1;
-	}
-	
-	int gridSize = atoi(argv[1]);
-	int maxPacketCount = atoi(argv[2]);
-	int maxStopCount = atoi(argv[2]);
-	genTrafficMultiForGrid(4, gridSize, maxPacketCount, maxStopCount);
+	genTrafficMultiForGrid(4, 20);
 	return 0;	
 }

@@ -1,3 +1,5 @@
+//DEPRECATED!!!
+
 #include "stdio.h" //For printf
 #include <array> //For array in outbox
 #include <cstdlib> //For rand gen
