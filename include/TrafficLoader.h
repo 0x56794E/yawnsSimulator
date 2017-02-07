@@ -1,5 +1,5 @@
-#ifndef TRAFFTUILS_H
-#define TRAFFUTIL_H
+#ifndef TRAFFUTILS_H
+#define TRAFFUTILS_H
 
 #include <map>
 

@@ -53,7 +53,7 @@ void sendMsg(Event* event, LPMap lpMap)
 		//send to other proc
 		//1. Turn the event into an array of int
 		int size = event->getRemainStopCount() + 1;
-		int* data = (int*)malloc(sizeof(int) * size); 
+		int* data =  new int[size]; //(int*)malloc(sizeof(int) * size); 
 		data[0] = event->getTimestamp();
 		for (int i = 1; i < size; ++i)
 			data[i] = event->nextStop();
@@ -83,7 +83,7 @@ void receiveMsg(MPI_Status status, LPMap lpMap)
 	MPI_Get_count(&status, MPI_INT, &count);
 
 	//Msg would be an array of int <timestamp of msg> <next stop id => the LP to forward to> <the rest of the stops>
-	int* number_buf = (int*)malloc(sizeof(int) * count);
+	int* number_buf = new int[count]; //(int*)malloc(sizeof(int) * count);
 	MPI_Recv(number_buf, count, MPI_INT, status.MPI_SOURCE, MSG_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
 	//Construct event object & schedule it on appropriate LP
@@ -93,5 +93,6 @@ void receiveMsg(MPI_Status status, LPMap lpMap)
 
 	lpMap[number_buf[1]]->scheduleEvent(event);
 
-	free(number_buf);
+	delete [] number_buf;
+	//	free(number_buf);
 }
