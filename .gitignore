@@ -1,3 +1,4 @@
+sim
 .project
 obj/*.o
 obj/test/*.o
