@@ -12,7 +12,7 @@
 using namespace std;
 
 class LP;
-typedef map<int, LP*> LPMap;
+typedef map<int, LP*> LPMap; //key: LP's id; value: LP
 
 class LP
 {

@@ -81,6 +81,10 @@ void idToCoor(int id, int gridSize, int &row, int &col)
 	col = id % gridSize;
 }
 
+/**
+ * TODO: VERY HACKY!!!
+ * FIX THIS to handle scale-free case!!
+ */
 int getRank(int lpId)
 {
 	int row, col;
@@ -95,3 +99,10 @@ int getRank(int lpId)
 		return col < 50 ? 3 : 2;
 	}
 }
+
+//Scalefree Topology
+void loadScaleFreeLP()
+{
+
+}
+

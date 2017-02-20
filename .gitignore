@@ -1,3 +1,8 @@
+## Eclipse stuff
 .project
+.cproject
+
+## Exe files
 obj/*.o
 obj/test/*.o
+sim

@@ -21,7 +21,7 @@ class SE
 	int* msgCount; //Number of msgs sent to ea proc in current epoch
 
 	//LPs
-	LPMap lpMap; 
+	LPMap lpMap; //Map of all LP residing on this proc
 	int minRow;
 	int maxRow;
 	int minCol;

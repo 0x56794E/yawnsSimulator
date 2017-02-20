@@ -34,11 +34,9 @@ int main(int argc, char* argv[])
 	SE se(p, rank, gridSize);
 
 	//Start timer
-	printf("Rank %d start event processing...\n", rank);
 	MPI_Barrier(MPI_COMM_WORLD);
 	auto begin = std::chrono::high_resolution_clock::now();
 	se.run();
-	printf("Rank %d finished event processing.\n", rank);
 
 	MPI_Barrier(MPI_COMM_WORLD);
 	double time_ms;
