@@ -34,6 +34,9 @@ OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 _OBJT = Event.o test/TestQ.o
 OBJT = $(patsubst %,$(ODIR)/%,$(_OBJT))
 
+_OBJCANTOR = CantorPairing.o test/TestCantorPairing.o
+OBJCANTOR = $(patsubst %,$(ODIR)/%,$(_OBJCANTOR))
+
 _TRAFF_OBJ = Event.o LP.o TopologyUtils.o TrafficLoader.o
 TRAFF_OBJ = $(patsubst %,$(ODIR)/%,$(_TRAFF_OBJ))
 		
@@ -49,5 +52,8 @@ trafficGen: $(ODIR)/TrafficGen.o
 test: $(OBJT)
 	$(CC) $(CFLAGS) -o $@ $(OBJT)
 	
+testCantor: $(OBJCANTOR)
+	$(CC) $(CFLAGS) -o $@ $(OBJCANTOR)
+		
 clean:
 	rm -f $(ODIR)/*.o  $(ODIR)/test/* *~ core $(IDIR)/*~ $(SDIR)/*~ $(IDIR)/*.gch tw testQ testHeap collComm foo testPosMsg testAntiMsg trafficGen testConstructLPs bar sim test traffic

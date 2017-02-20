@@ -17,6 +17,10 @@
 #include "TopologyUtils.h"
 #include <iostream> //for file ops
 #include <fstream> //file ops
+#include <stdio.h>      /* printf, fopen */
+#include <stdlib.h>     /* exit, EXIT_FAILURE */
+
+enum MODEL_TYPE {NODE = 0, LINK = 1};
 
 /** 
  * Given the rank, find appropriate input file to load all lps that are supposed to be on this proc.
@@ -101,7 +105,40 @@ int getRank(int lpId)
 }
 
 //Scalefree Topology
-void loadScaleFreeLP()
+void loadScalefreeLP(MODEL_TYPE type)
+{
+	switch (type)
+	{
+		case LINK:
+			doLoadLink();
+			break;
+
+		case NODE:
+			doLoadNode();
+			break;
+
+		default:
+			printf("Unknown node type: %d. Exiting\n", type);
+			exit(1);
+	}
+}
+
+/**
+ * Given the IDs of the source and target nodes,
+ * return the unique ID for the link
+ * IMPL THIS!!!!
+ */
+int getLinkId(int srcId, int destId)
+{
+
+}
+
+void doLoadLink()
+{
+
+}
+
+void doLoadNode()
 {
 
 }
