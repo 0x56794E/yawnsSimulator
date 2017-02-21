@@ -10,7 +10,7 @@ def main(argv):
     graph = snap.GenPrefAttach(node_count, node_deg, rnd)
 
     for edge in graph.Edges():
-        print "%d, %d" % (edge.GetSrcNId(), edge.GetDstNId())
+        print "%d -- %d;" % (edge.GetSrcNId(), edge.GetDstNId())
     
 if __name__ == '__main__':
     if len(sys.argv) != 3:
