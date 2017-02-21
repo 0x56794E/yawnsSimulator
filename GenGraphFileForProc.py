@@ -44,8 +44,13 @@ def genLinkIdFiles(file_name, delim, p, n):
         for line in f:
             # Haven't filled up for one proc yet
             if count < counts[cur_p]:
+                
                 #update ID
                 cur_id = cur_id + 1
+
+                if count == 0:
+                    print 'Printing link with ID %d for proc %d\n' % (cur_id, cur_p)
+                
                 
                 #print to file
                 out_file.write(str(cur_id) + delim + line)
@@ -53,7 +58,7 @@ def genLinkIdFiles(file_name, delim, p, n):
                 
             # Move on to next proc
             else:
-                print 'Moving from proc %d; last count = %d; id = %d\n' % (cur_p, count, cur_id
+                print 'Moving from proc %d; last count = %d; id = %d\n' % (cur_p, count, cur_id)
                 count = 0 # reset count
                 cur_p = cur_p + 1
 
