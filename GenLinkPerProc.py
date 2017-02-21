@@ -1,6 +1,6 @@
 ####################
 # Gen files containing link IDs for ea proc
-# Usage: python GenGraphFileForProc.py <graph_file_name> <delim> <proc_count> <link_count>
+# Usage: python GenLinkProc.py <graph_file_name> <delim> <proc_count> <link_count>
 #
 # Output format:
 # (1) File name: <graph_file_name>_<proc_count>_<proc the file is intended for>
@@ -64,7 +64,6 @@ def genLinkIdFiles(file_name, delim, p, n):
             out_file.write(str(cur_id) + delim + line)
             count = count + 1
             
-
     pass
     
 
@@ -81,7 +80,7 @@ def writeToFile(data, output_file):
     
 if __name__ == '__main__':
     if len(sys.argv) != 5:
-        print 'Usage: python GenGraphFileForProc.py <file_name> <delim> <proc_count> <link_count>\n'
+        print 'Usage: python GenLinkPerProc.py <file_name> <delim> <proc_count> <link_count>\n'
         sys.exit(1)
 
     genLinkIdFiles(sys.argv[1], sys.argv[2], int(sys.argv[3]), int(sys.argv[4]))
