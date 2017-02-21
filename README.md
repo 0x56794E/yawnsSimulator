@@ -1,4 +1,4 @@
-###C++ impl of YAWNS simulator.###
+# C++ impl of YAWNS simulator.
 
 
 ## Notes Graph Loader ##
