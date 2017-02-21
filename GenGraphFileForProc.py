@@ -42,29 +42,27 @@ def genLinkIdFiles(file_name, delim, p, n):
     #Generate for ea proc
     with open(file_name) as f:
         for line in f:
-            # Haven't filled up for one proc yet
-            if count < counts[cur_p]:
-                
-                #update ID
-                cur_id = cur_id + 1
 
-                if count == 0:
-                    print 'Printing link with ID %d for proc %d\n' % (cur_id, cur_p)
-                
-                
-                #print to file
-                out_file.write(str(cur_id) + delim + line)
-                count = count + 1
-                
-            # Move on to next proc
-            else:
-                print 'Moving from proc %d; last count = %d; id = %d\n' % (cur_p, count, cur_id)
+            # Moving on to next proc
+            if count >= counts[cur_p]:                
                 count = 0 # reset count
                 cur_p = cur_p + 1
 
                 #update output file name
                 out_file.close()
                 out_file = open(out_file_name + str(cur_p), 'w')
+
+
+            #######
+            # Write the line to the appropriate file
+            ######
+            
+            #update ID
+            cur_id = cur_id + 1
+
+            #print to file
+            out_file.write(str(cur_id) + delim + line)
+            count = count + 1
             
 
     pass
