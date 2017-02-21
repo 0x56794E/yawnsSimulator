@@ -16,7 +16,7 @@ void getNums(int code, std::vector<int> &nums)
 	//y = z - t
 	//x = w - y
 
-	int w = floor( (sqrt(code * 8 + 1) - 1) / 2);
+	int w = floor((sqrt(code * 8 + 1) - 1) / 2);
 	int num2 = code - (pow(w, 2) + w) / 2;
 	int num1 = w - num2;
 	nums.push_back(num1);

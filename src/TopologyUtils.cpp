@@ -14,11 +14,14 @@
  * <startTime> <numStops> <stop0> <stop1> ... <stopn>
  */
 
-#include "TopologyUtils.h"
 #include <iostream> //for file ops
 #include <fstream> //file ops
 #include <stdio.h>      /* printf, fopen */
 #include <stdlib.h>     /* exit, EXIT_FAILURE */
+
+//My stuff
+#include "TopologyUtils.h"
+#include "CantorPairing.h"
 
 enum MODEL_TYPE {NODE = 0, LINK = 1};
 
@@ -104,8 +107,13 @@ int getRank(int lpId)
 	}
 }
 
-//Scalefree Topology
-void loadScalefreeLP(MODEL_TYPE type)
+/**
+ * Load scale-free topology
+ * @param type: model type
+ * @param p: number of procs
+ * TODO: spec network size and stuff
+ */
+void loadScalefreeLP(MODEL_TYPE type, int p)
 {
 	switch (type)
 	{
@@ -126,16 +134,16 @@ void loadScalefreeLP(MODEL_TYPE type)
 /**
  * Given the IDs of the source and target nodes,
  * return the unique ID for the link
- * IMPL THIS!!!!
+ * Using Cantor Pairing Function
  */
 int getLinkId(int srcId, int destId)
 {
-
+	return getCode(srcId, destId);
 }
 
 void doLoadLink()
 {
-
+	//Re
 }
 
 void doLoadNode()
