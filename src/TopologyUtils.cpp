@@ -143,7 +143,13 @@ int getLinkId(int srcId, int destId)
 
 void doLoadLink()
 {
-	//Re
+	//For now:
+
+	//(1) read from graph file => comp edge ID based on src and dst ndoes
+
+	//(2) dist among procs => also lets ea proc know which IDs are on which proc
+
+
 }
 
 void doLoadNode()
