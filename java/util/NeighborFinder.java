@@ -9,6 +9,7 @@
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.IOException;
+import java.util.stream.Stream;
 
 public class NeighborFinder
 {
@@ -27,6 +28,10 @@ public class NeighborFinder
 
     private static void doGenerate(String fileName) throws IOException
     {
-        Files.lines(Paths.get(fileName));
+        Stream<String> lines = Files.lines(Paths.get(fileName));
+
+        lines.forEach(line -> {
+                System.out.println("Processing line " + line);
+        });
     }
 }
