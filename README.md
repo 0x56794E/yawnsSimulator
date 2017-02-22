@@ -1,7 +1,7 @@
 # C++ impl of YAWNS simulator.
 
 
-# Notes Graph Loader ##
+# Notes on Graph Loader ##
 
 ## Link model:
 - Part of graph data for each proc is pre-generated in python => must do this before start the sim
@@ -10,3 +10,7 @@
 
 ## Node model:
 - Graph data for each proc is loaded in setup phase
+
+# Notes on Utils ##
+
+## Java 8 REQUIRED!!!
