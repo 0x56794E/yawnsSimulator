@@ -4,6 +4,7 @@
 #include <queue> //For priority queue
 #include <string> //for string
 #include <map>
+#include <unordered_set> //for the neighbor set
 
 //own includes
 #include "Event.h"
@@ -19,9 +20,11 @@ class LP
 	int id;
 	std::priority_queue<Event*, std::vector<Event*>, EventComparator> fel;
 	int totalEvent; //Total event processed
+	unordered_set<int> neighbors; //Set of IDs of the neighbor of this LP
 	
   public:
   	LP(int id);
+  	void addNeighbor(LP* lp); //Add an LP as a neighbor
 	int getTotalProcessedEvent();
 	int getFELSize();
 	void handleEvent(Event*, LPMap lpMap);

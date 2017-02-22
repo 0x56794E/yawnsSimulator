@@ -18,10 +18,10 @@
 #include <fstream> //file ops
 #include <stdio.h>      /* printf, fopen */
 #include <stdlib.h>     /* exit, EXIT_FAILURE */
+#include <string>
 
 //My stuff
 #include "TopologyUtils.h"
-#include "CantorPairing.h"
 
 enum MODEL_TYPE {NODE = 0, LINK = 1};
 
@@ -113,7 +113,7 @@ int getRank(int lpId)
  * @param p: number of procs
  * TODO: spec network size and stuff
  */
-void loadScalefreeLP(MODEL_TYPE type, int p)
+void loadScalefreeLP(MODEL_TYPE type, int rank)
 {
 	switch (type)
 	{
@@ -141,11 +141,10 @@ int getLinkId(int srcId, int destId)
 	return getCode(srcId, destId);
 }
 
-void doLoadLink()
+void doLoadLink(int rank, int p, string fileName, LPMap &lpMap)
 {
-	//For now:
 
-	//(1) read from graph file => comp edge ID based on src and dst ndoes
+	//(1) read from graph file
 
 	//(2) dist among procs => also lets ea proc know which IDs are on which proc
 
