@@ -13,12 +13,13 @@
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.io.IOException;
+import java.io.File;
 
 import java.util.stream.Stream;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
 
 public class NeighborFinder
 {
@@ -26,8 +27,11 @@ public class NeighborFinder
     private final String delim;
     private int idx = 0; //TODO: hacky way to keep track of idx of item in stream
     
-    //Key: node ID; Value: list of IDs of nodes who's nei of the key
-    private Map<Integer, List<Integer>> nodeMap = new HashMap<>();
+    //Key: node ID; Value: list of links touching node with given ID
+    private Map<String, Set<Link>> nodeMap = new HashMap<>();
+
+    //Key: link ID; value: Link obj
+    private Map<Integer, Link> linkMap = new HashMap<>();
     
     public static void main(String[] args) throws IOException
     {
@@ -51,6 +55,9 @@ public class NeighborFinder
     {
         Stream<String> lines = Files.lines(Paths.get(fileName));
         lines.forEach(line -> process(line));
+
+        updateNeighborSet();
+        writeToFile();
     }
 
     /**
@@ -59,8 +66,64 @@ public class NeighborFinder
      */
     private void process(String line)
     {
-        String toks = line.split(delim);
-        System.out.println(line);
+        String toks[] = line.split(delim);
+        Link link = new Link (idx, toks[0], toks[1]);
+        linkMap.put(idx, link);
+        
+        if (!nodeMap.containsKey(toks[0]))
+            nodeMap.put(toks[0], new HashSet<Link>());
+
+        if (!nodeMap.containsKey(toks[1]))
+            nodeMap.put(toks[1], new HashSet<Link>());
+
+        nodeMap.get(toks[0]).add(link);
+        nodeMap.get(toks[1]).add(link);        
+        
+        //Incr the idx => this is the ID of the link
+        ++idx;
+    }
+
+    /**
+     * Traverse the nodeMap and linkMap
+     * to update links' neighbor set
+     */
+    private void updateNeighborSet()
+    {
+        for (Map.Entry<Integer, Link> entry : linkMap.entrySet())
+        {
+            Link link = entry.getValue();
+            
+            //Add links assoc with srcNode as neis
+            for (Link nei : nodeMap.get(link.srcId))
+            {
+                link.addNei(nei);
+                nei.addNei(link);
+            }
+
+            //Add links assoc with dstNode as neis
+            for (Link nei : nodeMap.get(link.dstId))
+            {
+                link.addNei(nei);
+                nei.addNei(link);
+            }
+        }
+    }
+
+    /**
+     * Write the neighbor set to file.
+     * File name format: <input_file_name>_<link_id>.txt
+     * Line format: <nei_id>
+     */
+    private void writeToFile() throws IOException
+    {
+        //Make dir to store these files
+        String dirName = fileName + "_links";
+        new File(dirName).mkdir();
+        
+        for (Link link : linkMap.values())
+        {
+            Files.write(Paths.get(dirName + "/" + link.linkId + ".txt"), link.getNeiIDs());
+        }
     }
     
     private static class Link
@@ -69,6 +132,8 @@ public class NeighborFinder
         public final String srcId;
         public final String dstId;
 
+        private Set<String> neis = new HashSet<>();
+        
         public Link(int linkId, String srcId, String dstId)
         {
             this.linkId = linkId;
@@ -76,12 +141,22 @@ public class NeighborFinder
             this.dstId = dstId;
         }
 
+        public void addNei(Link nei)
+        {
+            neis.add(String.valueOf(nei.linkId));
+        }
+
+        public Set<String> getNeiIDs()
+        {
+            return neis;
+        }
+
         /**
          * Stupid yet simple and working
          */
         public int hashCode()
         {
-            return String.format("%s_%s", srcId, dstId).hashCode();
+            return linkId;
         }
 
         public boolean equals(Object obj)
@@ -90,8 +165,7 @@ public class NeighborFinder
                 return false;
 
             Link that = (Link) obj;
-            return this.srcId.equals(that.srcId)
-                && this.dstId.equals(that.dstId);
+            return this.linkId == that.linkId;
         }
     }
 }
