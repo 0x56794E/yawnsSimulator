@@ -22,6 +22,12 @@ import java.util.ArrayList;
 
 public class NeighborFinder
 {
+    private final String fileName;
+    private final String delim;
+    private int idx = 0; //TODO: hacky way to keep track of idx of item in stream
+    
+    //Key: node ID; Value: list of IDs of nodes who's nei of the key
+    private Map<Integer, List<Integer>> nodeMap = new HashMap<>();
     
     public static void main(String[] args) throws IOException
     {
@@ -31,29 +37,36 @@ public class NeighborFinder
             System.exit(1);                
         }
 
-        
-        doGenerate(args[0], args[1]);
-                
+        NeighborFinder finder = new NeighborFinder(args[0], args[1]);
+        finder.exec();                
+    }
+
+    private NeighborFinder (String fileName, String delim)
+    {
+        this.fileName = fileName;
+        this.delim = delim;            
     }
     
-    private static void doGenerate(String fileName, String delim) throws IOException
+    private void exec() throws IOException
     {
         Stream<String> lines = Files.lines(Paths.get(fileName));
-
-        //Key: node
-        Map<Integer, List<Integer>> nodeMap = new HashMap<>();
-
-        lines.forEach(line -> {
-                String[] toks = line.split(delim);
-
-
-        });
+        lines.forEach(line -> process(line));
     }
 
+    /**
+     * Line has format: <number><delim><number>
+     * 
+     */
+    private void process(String line)
+    {
+        String toks = line.split(delim);
+        System.out.println(line);
+    }
+    
     private static class Link
     {
         public final int linkId;
-        public final String  srcId;
+        public final String srcId;
         public final String dstId;
 
         public Link(int linkId, String srcId, String dstId)
