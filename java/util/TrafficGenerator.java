@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Stream;
+import java.util.concurrent.ThreadLocalRandom; //for rand gen long in range
+
 
 /**
  * Generate traffic 
@@ -71,17 +73,18 @@ public class TrafficGenerator
         //Line format: ID <SRCID> <DSTID>
         String[] toks = lpInfo.split("\\s++");
         Random rand = new Random(System.currentTimeMillis());
+        Random timeRand = new Random(System.currentTimeMillis());
         
         int numPacket = rand.nextInt(MAX_PACKET); //Num packet on ea LP
         int numStop; //num stop for ea packet
-        long startTime; //Arrival time for ea packet; TODO: make this follow poisson
+        int startTime; //Arrival time for ea packet; TODO: make this follow poisson
 
-        Random timeRand = new Random(System.currentTimeMillis());
-
+        long test = ThreadLocalRandom.current().nextLong(0, Long.MAX_VALUE);
+        
         for (int i = 0; i < numPacket; ++i)
         {
             numStop = rand.nextInt(MAX_STOP);
-            startTime = timeRand.nextLong();
+            startTime = timeRand.nextInt(Integer.MAX_VALUE);
 
             //Output format (ea line): <start LP> <arrival time> <num stop>
             lines.add(String.format("%s %d %d\n", toks[0], startTime, numStop));
