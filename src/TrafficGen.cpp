@@ -85,51 +85,37 @@ void genTrafficMultiForGrid(int p, int gridSize)
 	}
 }
 	
-
-/**
- * Use for simple case where ea LP rep one node.
- * and fully connected topology is assumed.
- */
-void genTrafficSimple()
+//Generate traffic for scale-free topology
+void genTrafficForScalefree(string graphFileName, int p)
 {
- 	int lpCount = 2; //input params
+	//General idea:
+	//Gen start stop, start time, stop count
+	//At ea stop, the handler will randomly gen the next stop
+	// The next stop is randomly chosen among the neighbors
+	// of the current stop
+
+	//Output format:
+	//Each line:
+	//start_stop_start_time stop_count
+	//File name format: <graph_file_name>_p_rank
+	//where p: num of proc to be used
+	//rank: the rank of the proc this file is for
+	//
+
 	srand(time(NULL));
-	int numPackets, numStops, startTs, curStop, nextStop;
 
-	for (int i = 0; i < lpCount; ++i)
+	int numPacket, numStop, startTime;
+
+	for (int rank = 0; rank < p; ++rank)
 	{
-		string fileName = to_string(i) + "_input";
-		ofstream myfile (fileName);
-	
-		if (myfile.is_open())
-		{
-			numPackets = rand() % MAX_PACKET_CT;
+		//ofstream outfile (to_string(rank) + "_" + to_string(p) + "_traffic_" + to_string(gridSize));
 
-			for (int j = 0; j < numPackets; ++j)
-			{
-				startTs = rand();
-				numStops = rand() % MAX_STOP_CT + 1;
-
-				myfile << startTs << " " << numStops;
-
-				//Generate the stops:
-				nextStop = i;
-				for (int k = 0; k < numStops; ++k)
-				{
-					curStop = nextStop;
-					nextStop = rand() % lpCount;
-					while (nextStop == curStop)
-						nextStop = rand() % lpCount;
-
-					myfile << " " << nextStop;
-				}
-				myfile << "\n";
-			}
-			myfile.close();
-		}
 	}
-}
 
+
+
+
+}
 
 int main(int argc, char* argv[])
 {	

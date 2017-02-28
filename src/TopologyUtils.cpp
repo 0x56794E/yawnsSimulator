@@ -139,7 +139,7 @@ void loadScalefreeLP(MODEL_TYPE type, int rank, int p, string fileName, LPMap &l
 //INDEPENDENT of the number of procs being used!!!
 string getNeighborFileName(int lpId, string graphFileName)
 {
-	string ret = (graphFileName + "_links/") + (lpId + ".txt");
+	string ret = graphFileName + "_links/" + to_string(lpId) + ".txt";
 	return ret;
 }
 
