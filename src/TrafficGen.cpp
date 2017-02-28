@@ -109,6 +109,18 @@ void genTrafficForScalefree(string graphFileName, int p)
 	for (int rank = 0; rank < p; ++rank)
 	{
 		//ofstream outfile (to_string(rank) + "_" + to_string(p) + "_traffic_" + to_string(gridSize));
+		ofstream outfile (graphFileName + "_traffic_" + to_string(p) + "_" + to_string(rank) + ".txt" );
+
+		//Get all LPs on this proc
+		//lp list file name: <graphFileName>_p_rank
+		ifstream infile (graphFileName + "_" + to_string(p) + "_" + to_string(rank));
+
+
+		//Gen the traffic for ea LP
+
+
+		outfile.close();
+		infile.close();
 
 	}
 

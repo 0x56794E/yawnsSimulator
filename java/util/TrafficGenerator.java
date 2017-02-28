@@ -1,47 +1,70 @@
-
-import sim.pojo.ILP;
-import sim.enums.LPType;
-
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import org.jgrapht.alg.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.SimpleGraph;
-import sim.Simulator;
-import sim.pojo.impl.SimpleLP;
+import java.util.stream.Stream;
 
 /**
  * Created by VyNguyen on 2/22/2017
  */
 public class TrafficGenerator
 {    
-    public static final String Poisson_Traffic_FileName_Format = "PoissonTraffic_%s_%d_%d%s";
     
     public static void main(String[] args) throws IOException
     { 
-        String fileName = "pl_g50000_3"; //pl_g<node count>_<power law deg/lambda>
-        int numPacket = 5000;
-        int arrivalRate = 2; //lambda = 1/arrivalRate; (unit time)
-        int maxEdge = 20;
-        TrafficGenerator.genTraffic(fileName, maxEdge, numPacket, arrivalRate);
     }
-    
-    public static String getPoissonTrafficFileName(String topologyFileName, int numPacket, int arrivalRate)
+
+    public void genTraffic(String graphFileName, int p) throws IOException
     {
-        //TODO: if not exist, generate
-        return String.format(Poisson_Traffic_FileName_Format, topologyFileName, numPacket, arrivalRate, ".csv");
+        int numPacket; //Num packet on ea LP
+        int numStop; //Num stop of ea packet
+        int startTime; //Arrival time => TODO: make this follow poisson dist.
+
+        for (int rank = 0; rank < p; ++rank)
+        {
+            //Lines to write for each proc.
+            //Ea line has format: <Source LP ID> <start time> <stop count>
+            final List<String> lines = new ArrayList<>();
+            
+            //Get input file for ea proc - the LP list for ea proc
+            Stream<String> lps = Files.lines(Paths.get(graphFileName + "_" + p + "_" + rank));
+
+            lps.forEach(lp -> process(lp, lines));
+            
+            //Output file for ea proc
+            Files.write(Paths.get(graphFileName + "_traffic_" + p + "_rank_"
+           
+        }
     }
+
+    //TODO: tentative for now
+    private static final int MAX_PACKET = 5;
+    private static final int MAX_STOP = 10;
     
-    public static String getResultDirectory(String topologyFileName, int numPacket, int arrivalRate)
-    {        
-        return String.format(Poisson_Traffic_FileName_Format, topologyFileName, numPacket, arrivalRate, "Result");
+    private void process(String lpInfo, List<String> lines)
+    {
+        //Line format: ID <SRCID> <DSTID>
+        String[] toks = lpInfo.split("\\s++");
+        Random rand = new Random(System.currentTimeMillis());
+        
+        int numPacket = rand.nextInt() % MAX_PACKET; //Num packet on ea LP
+        int numStop; //num stop for ea packet
+        long startTime; //Arrival time for ea packet; TODO: make this follow poisson
+
+        Random timeRand = new Random(System.currentTimeMillis());
+        
+        for (int i = 0; i < numPacket; ++i)
+        {
+            numStop = rand.nextInt() % MAX_STOP;
+            startTime = timeRand.nextLong();
+
+            //Output format (ea line): <start LP> <arrival time> <num stop>
+        }
+        
+        
     }
     
     /**
@@ -61,7 +84,8 @@ public class TrafficGenerator
      * @throws FileNotFoundException
      * @throws IOException 
      */
-    public static void genTraffic(String fileName, int maxEdge, int numInitPacket, int arrivalRate) throws FileNotFoundException, IOException
+    /*
+    public static void genTrafficPoisson(String fileName, int maxEdge, int numInitPacket, int arrivalRate) throws FileNotFoundException, IOException
     {
         SimpleGraph<ILP, DefaultWeightedEdge> graph = constructTopology(fileName, arrivalRate);
         System.out.println("Finish constructing graph\nStart gen traffic");
@@ -140,133 +164,5 @@ public class TrafficGenerator
         }
         fw.close();
     }
-    
-    public static SimpleGraph<ILP, DefaultWeightedEdge> constructTopology(String fileName, int arrivalRate) throws FileNotFoundException, IOException
-    {
-        //A simple undirected graph.
-        //At most one edge exist btw any two vertices
-        SimpleGraph<ILP, DefaultWeightedEdge> graph = new SimpleGraph<ILP, DefaultWeightedEdge>(DefaultWeightedEdge.class);
-        
-        BufferedReader br = new BufferedReader(new FileReader(fileName));
-        String[] toks;
-        int id1, id2;
-        ILP lp1, lp2;
-
-        //Construct the LPs
-        //Line format: ID of node #1, ID of node #2
-        //Each line reps connectivity
-        for (String line = br.readLine(); line != null; line = br.readLine())
-        {
-            System.out.println(line);
-            toks = line.split(",");
-            id1 = Integer.parseInt(toks[0].trim());
-            id2 = Integer.parseInt(toks[1].trim());
-
-            lp1 = new SimpleLP(id1, arrivalRate);
-            lp2 = new SimpleLP(id2, arrivalRate);
-            
-            //Since the check is done automatically, just add the vertices
-            graph.addVertex(lp1);
-            graph.addVertex(lp2);
-            DefaultWeightedEdge e = graph.addEdge(lp1, lp2);
-            graph.setEdgeWeight(e, 1);
-        }
-        
-        return graph;
-    }
-    
-    //=======================================
-    ///OLD ALGORITHM
-    //Packets make random walk thru the network
-    public static final String RW_Traffic_FileName_Format = "RandomWalkTraffic_%s_%d_%d_%s.csv";    
-    public static final int MAX_VALUE = 5000; //Max unit time
-    
-    /**
-     * Generate Traffic and Export to file
-     * Each line reps a packet and contains a list of IDs of the LPs the packet to traverse:
-     * [src ID] [dest 1] [dest 2] ... [dest n, n <= maxHops]
-     * @param numPackets number of packets to generate
-     * @param maxHop maximum number of edges a packet can go thru, inclusive
-     * @param fileName name of the file describing the network
-     */
-    public static void genTraffic(int numPackets, int minHop, int maxHop, String fileName, long transTime, long switchTime, Simulator simulator) throws IOException
-    {
-        genTraffic(LPType.getNodeTopology(fileName, transTime, switchTime, simulator), numPackets, minHop, maxHop, fileName);
-    }
-
-    public static void genTraffic(Map<Integer, ILP> lpMap, int numPackets, int minHop, int maxHop, String fileName) throws IOException
-    {
-        Random rand = new Random();
-        StringBuilder sb = new StringBuilder();
-        int maxLPId = lpMap.size();
-        FileWriter fw = new FileWriter(String.format(RW_Traffic_FileName_Format, numPackets, minHop, maxHop, fileName));
-        String newLine = System.getProperty("line.separator");
-
-        int hopCount, curLPId;
-        ILP lp;
-
-        for (int i = 0; i < numPackets; ++i)
-        {
-            //Gen the start time
-            sb.append(rand.nextInt(MAX_VALUE)).append(",");
-
-            //Gen the first stop
-            curLPId = rand.nextInt(maxLPId);
-            sb.append(curLPId);
-            lp = lpMap.get(curLPId);
-
-            hopCount = lp.genHopCount(maxHop, minHop);
-
-            //Gen the rest of the stops
-            for (int j = 1; j <= hopCount; ++j)
-            {
-                curLPId = lp.nextNeiId(); //rand choose a neighbor as next stop
-                sb.append(",").append(curLPId);
-                lp = lpMap.get(curLPId);
-            }
-            sb.append(newLine);
-            fw.write(sb.toString());
-            sb.setLength(0);
-        }
-        fw.close();
-    }
-
-    //Traffic is generated based on NODE oriented model.
-    //The stop IDs are those of the node NOT the link.
-    //Need to be able to tell which link corresp. with which node
-    public static void loadTraffic(String fileName, Map<Integer, ILP> lpMap, LPType type, int packetCount, int minHop, int maxHop) throws IOException
-    {
-        BufferedReader br = new BufferedReader(new FileReader(String.format(RW_Traffic_FileName_Format, packetCount, minHop, maxHop, fileName)));
-        String[] toks;
-
-        for (String line = br.readLine(); line != null; line = br.readLine())
-        {
-            toks = line.split(",");
-            ArrayList<Integer> stops = new ArrayList<Integer>();
-            for (int i = 1; i < toks.length; ++i)
-            {
-                stops.add(Integer.parseInt(toks[i]));
-            }
-        }
-    }
-
-    /*
-    private void scheduleInitialEvents()
-    {
-        //Schedule x (20 max) initial events on n LPs
-        Random rand = new Random();
-        int mapSize = lpMap.size();
-        int n = rand.nextInt(mapSize);
-        int lpId, x;
-        ILP lp;
-        for (int i = 0; i < n; ++i)
-        {
-            lpId = rand.nextInt(mapSize);
-            x = rand.nextInt(21);
-            lp = lpMap.get(lpId);
-            for (int j = 0; j < x; ++j)
-                lp.scheduleEvent(new MaxStopAwareEvent(rand.nextLong(), EventType.ARRIVAL, rand.nextInt(mapSize)));
-        }
-    }
-    */
+    */    
 }
