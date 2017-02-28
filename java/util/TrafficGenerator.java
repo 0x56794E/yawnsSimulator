@@ -72,7 +72,7 @@ public class TrafficGenerator
         String[] toks = lpInfo.split("\\s++");
         Random rand = new Random(System.currentTimeMillis());
         
-        int numPacket = rand.nextInt() % MAX_PACKET; //Num packet on ea LP
+        int numPacket = rand.nextInt(MAX_PACKET); //Num packet on ea LP
         int numStop; //num stop for ea packet
         long startTime; //Arrival time for ea packet; TODO: make this follow poisson
 
@@ -80,7 +80,7 @@ public class TrafficGenerator
 
         for (int i = 0; i < numPacket; ++i)
         {
-            numStop = rand.nextInt() % MAX_STOP;
+            numStop = rand.nextInt(MAX_STOP);
             startTime = timeRand.nextLong();
 
             //Output format (ea line): <start LP> <arrival time> <num stop>
