@@ -62,3 +62,8 @@ Event* LP::nextEvent()
 	fel.pop();
 	return event;
 }
+
+void LP::addNeighbor(int neiId)
+{
+	neighbors.insert(neiId);
+}

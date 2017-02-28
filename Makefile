@@ -31,7 +31,7 @@ $(ODIR)/%.o: $(SDIR)/%.cpp $(DEPS)
 _OBJ = Event.o LP.o TopologyUtils.o TrafficLoader.o Communicator.o SE.o main.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 	
-_OBJT = Event.o test/TestQ.o
+_OBJT = test/TestMisc.o
 OBJT = $(patsubst %,$(ODIR)/%,$(_OBJT))
 
 _OBJCANTOR = CantorPairing.o test/TestCantorPairing.o
@@ -56,4 +56,4 @@ testCantor: $(OBJCANTOR)
 	$(CC) $(CFLAGS) -o $@ $(OBJCANTOR)
 		
 clean:
-	rm -f $(ODIR)/*.o  $(ODIR)/test/* *~ core $(IDIR)/*~ $(SDIR)/*~ $(IDIR)/*.gch tw testQ testHeap collComm foo testPosMsg testAntiMsg trafficGen testConstructLPs bar sim test traffic testCantor
+	rm -f $(ODIR)/*.o  $(ODIR)/test/* *~ core $(IDIR)/*~ $(SDIR)/*~ $(IDIR)/*.gch tw testMisc testHeap collComm foo testPosMsg testAntiMsg trafficGen testConstructLPs bar sim test traffic testCantor

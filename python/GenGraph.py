@@ -1,6 +1,7 @@
 ######
 # Generate scale-free graph and output the edge list
-# Usage: python GenGraph.py <node_count> <node_degree>
+# Usage: python GenGraph.py <node_count> <node_degree> <output fmt, optional>
+# Default output format to %d,%d (comma separated)
 ######
 
 import snap
@@ -9,6 +10,7 @@ import sys
 def genGraph(argv):
     node_count = int(argv[1])
     node_deg = int(argv[2])
+
     fmt = "%d,%d"
 
     if (len(argv) > 3):

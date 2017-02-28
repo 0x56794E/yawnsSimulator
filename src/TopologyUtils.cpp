@@ -141,13 +141,59 @@ int getLinkId(int srcId, int destId)
 	return getCode(srcId, destId);
 }
 
+//INDEPENDENT of the number of procs being used!!!
+string getNeighborFileName(int lpId, string graphFileName)
+{
+	return graphFileName + "_links/" + lpId + ".txt";
+}
+
+void loadNeighbors(LP* lp, string fileName)
+{
+	ifstream inFile (fileName);
+	int neiId;
+
+	if (inFile.is_open())
+	{
+		while (inFile >> neiId)
+		{
+			lp->addNeighbor(neiId);
+		}
+
+		inFile.close();
+	}
+}
+
+/**
+ * TODO: currently assuming SPACE delim!!!!!
+ * fileName: name of the graph file
+ * 1a => file containing LPs for proc rank: fileName_p_rank
+ */
 void doLoadLink(int rank, int p, string fileName, LPMap &lpMap)
 {
+	//(1) eac proc reads from its own graph file
+	//1a. Construct LPMap for the proc
+	//1b. Load the set of neighbors for ea LP
+	ifstream inFile (fileName + "_"
+			+ to_string(p) + "_"
+			+ to_string(rank));
 
-	//(1) read from graph file
+	//Each line: <link ID> <src node ID> <dst node ID>
+	int linkId, srcId, dstId;
+	if (inFile.is_open())
+	{
+		while (inFile >> linkId >> srcId >> dstId)
+		{
+			//Construct LP
+			lpMap[linkId] = new LP(linkId);
 
-	//(2) dist among procs => also lets ea proc know which IDs are on which proc
+			//Load neighbors
+			loadNeighbors(lpMap[linkid]);
+		}
 
+		inFile.close();
+	}
+
+	//(2) do all-to-all bcast so all procs know which LP on which proc?
 
 }
 
