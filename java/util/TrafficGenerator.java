@@ -11,10 +11,21 @@ import java.util.stream.Stream;
  * Created by VyNguyen on 2/22/2017
  */
 public class TrafficGenerator
-{    
-    
+{
+    //TODO: tentative for now
+    private static final int MAX_PACKET = 5;
+    private static final int MAX_STOP = 10;
+        
     public static void main(String[] args) throws IOException
-    { 
+    {
+        if (args.length < 2)
+        {
+            System.out.println("Usage: java TrafficGenerator <graphFileName> <procCount>");
+            System.exit(1);
+        }
+                
+        TrafficGenerator gen = new TrafficGenerator();
+        gen.genTraffic(args[0], Integer.parseInt(args[1]));
     }
 
     public void genTraffic(String graphFileName, int p) throws IOException
