@@ -8,7 +8,17 @@ import java.util.Random;
 import java.util.stream.Stream;
 
 /**
- * Created by VyNguyen on 2/22/2017
+ * Generate traffic 
+ * Input:
+ * (0) Files containting edge lists for each proc (1 file /proc)
+ * (1) Number of processors to be used p
+ * (2) TODO: interarrival time
+ *
+ * Output: p files each containing traffic for ea proc
+ * 
+ * TODO: make interarrival time follow poisson
+ * @author Vy Thuy Nguyen
+ * @since 2/22/2017
  */
 public class TrafficGenerator
 {
