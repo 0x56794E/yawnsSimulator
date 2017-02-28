@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Stream;
-import java.util.concurrent.ThreadLocalRandom; //for rand gen long in range
-
 
 /**
  * Generate traffic 
@@ -79,8 +77,6 @@ public class TrafficGenerator
         int numStop; //num stop for ea packet
         int startTime; //Arrival time for ea packet; TODO: make this follow poisson
 
-        long test = ThreadLocalRandom.current().nextLong(0, Long.MAX_VALUE);
-        
         for (int i = 0; i < numPacket; ++i)
         {
             numStop = rand.nextInt(MAX_STOP);
