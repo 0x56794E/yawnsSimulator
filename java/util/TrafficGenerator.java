@@ -15,6 +15,7 @@ import java.util.stream.Stream;
  * (2) TODO: interarrival time
  *
  * Output: p files each containing traffic for ea proc
+ * Ea line has this format: <source LP ID> <start time> <stop count>
  * 
  * TODO: make interarrival time follow poisson
  * @author Vy Thuy Nguyen
@@ -23,7 +24,7 @@ import java.util.stream.Stream;
 public class TrafficGenerator
 {
     //TODO: tentative for now
-    private static final int MAX_PACKET = 5;
+    private static final int MAX_PACKET = 20;
     private static final int MAX_STOP = 10;
         
     public static void main(String[] args) throws IOException
@@ -56,15 +57,13 @@ public class TrafficGenerator
             lps.forEach(lp -> process(lp, lines));
             
             //Output file for ea proc
-            Files.write(Paths.get(graphFileName + "_traffic_" + p + "_rank_"), lines);
+            System.out.printf("Writing to file for proc %d; Line coutn = %d\n",
+                              rank, lines.size());
+            Files.write(Paths.get(graphFileName + "_traffic_" + p + "_" + rank), lines);
            
         }
     }
 
-    //TODO: tentative for now
-    private static final int MAX_PACKET = 5;
-    private static final int MAX_STOP = 10;
-    
     private void process(String lpInfo, List<String> lines)
     {
         //Line format: ID <SRCID> <DSTID>
@@ -76,14 +75,15 @@ public class TrafficGenerator
         long startTime; //Arrival time for ea packet; TODO: make this follow poisson
 
         Random timeRand = new Random(System.currentTimeMillis());
-        
+
+        System.out.printf("numPacket = %d; \n", numPacket);
         for (int i = 0; i < numPacket; ++i)
         {
             numStop = rand.nextInt() % MAX_STOP;
             startTime = timeRand.nextLong();
 
             //Output format (ea line): <start LP> <arrival time> <num stop>
-            
+            lines.add(String.format("%s %d %d\n", toks[0], startTime, numStop));
         }
         
         
