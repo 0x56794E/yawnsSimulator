@@ -107,10 +107,18 @@ int getRank(int lpId)
 	}
 }
 
+/********************/
+/* SCALE FREE STUFF */
+/********************/
+
+
 /**
  * Load scale-free topology
  * @param type: model type
+ * @param rank: the rank of the proc
  * @param p: number of procs
+ * @param fileName: name of the file containing the graph's edge list
+ * @param lpMap: the lpMap for this proc (ONLY one instance per proc)
  * TODO: spec network size and stuff
  */
 void loadScalefreeLP(MODEL_TYPE type, int rank, int p, string fileName, LPMap &lpMap)
