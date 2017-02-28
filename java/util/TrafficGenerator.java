@@ -35,7 +35,7 @@ public class TrafficGenerator
             lps.forEach(lp -> process(lp, lines));
             
             //Output file for ea proc
-            Files.write(Paths.get(graphFileName + "_traffic_" + p + "_rank_"
+            Files.write(Paths.get(graphFileName + "_traffic_" + p + "_rank_"), lines);
            
         }
     }
@@ -62,6 +62,7 @@ public class TrafficGenerator
             startTime = timeRand.nextLong();
 
             //Output format (ea line): <start LP> <arrival time> <num stop>
+            
         }
         
         
