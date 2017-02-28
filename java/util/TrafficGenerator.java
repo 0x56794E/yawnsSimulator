@@ -44,7 +44,8 @@ public class TrafficGenerator
         int numPacket; //Num packet on ea LP
         int numStop; //Num stop of ea packet
         int startTime; //Arrival time => TODO: make this follow poisson dist.
-
+        String outputFileName;
+        
         for (int rank = 0; rank < p; ++rank)
         {
             //Lines to write for each proc.
@@ -57,9 +58,10 @@ public class TrafficGenerator
             lps.forEach(lp -> process(lp, lines));
             
             //Output file for ea proc
-            System.out.printf("Writing to file for proc %d; Line coutn = %d\n",
-                              rank, lines.size());
-            Files.write(Paths.get(graphFileName + "_traffic_" + p + "_" + rank), lines);
+            outputFileName = graphFileName + "_traffic_" + p + "_" + rank;
+            System.out.printf("Writing for proc %d to file %s; line count: %d\n",
+                              rank, outputFileName, lines.size());
+            Files.write(Paths.get(outputFileName), lines);
            
         }
     }
@@ -76,7 +78,6 @@ public class TrafficGenerator
 
         Random timeRand = new Random(System.currentTimeMillis());
 
-        System.out.printf("numPacket = %d; \n", numPacket);
         for (int i = 0; i < numPacket; ++i)
         {
             numStop = rand.nextInt() % MAX_STOP;
