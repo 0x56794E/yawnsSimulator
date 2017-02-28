@@ -19,7 +19,10 @@ SE::SE(int lpCount, int rank, int gridSize)
 	this->rank = rank;
 
 	//Load LPs & init msgCount
-	loadLP(rank, lpCount, gridSize, lpMap, minRow, maxRow, minCol, maxCol);
+//	loadLP(rank, lpCount, gridSize, lpMap, minRow, maxRow, minCol, maxCol);
+
+	loadScalefreeLP(LINK, rank, lpCount, "test_graph2.txt", lpMap);
+
 
 	//init msg count to other procs
 	msgCount = new int[lpCount];

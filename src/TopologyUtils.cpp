@@ -23,8 +23,6 @@
 //My stuff
 #include "TopologyUtils.h"
 
-enum MODEL_TYPE {NODE = 0, LINK = 1};
-
 /** 
  * Given the rank, find appropriate input file to load all lps that are supposed to be on this proc.
  * Assume the topology is a grid and the boundaries of the portion a proc is to rep are defined in the file.
@@ -110,7 +108,6 @@ int getRank(int lpId)
 /********************/
 /* SCALE FREE STUFF */
 /********************/
-
 
 /**
  * Load scale-free topology
