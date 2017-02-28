@@ -113,12 +113,12 @@ int getRank(int lpId)
  * @param p: number of procs
  * TODO: spec network size and stuff
  */
-void loadScalefreeLP(MODEL_TYPE type, int rank)
+void loadScalefreeLP(MODEL_TYPE type, int rank, int p, string fileName, LPMap &lpMap)
 {
 	switch (type)
 	{
 		case LINK:
-			doLoadLink();
+			doLoadLink(rank, p, fileName, lpMap);
 			break;
 
 		case NODE:
@@ -131,20 +131,11 @@ void loadScalefreeLP(MODEL_TYPE type, int rank)
 	}
 }
 
-/**
- * Given the IDs of the source and target nodes,
- * return the unique ID for the link
- * Using Cantor Pairing Function
- */
-int getLinkId(int srcId, int destId)
-{
-	return getCode(srcId, destId);
-}
-
 //INDEPENDENT of the number of procs being used!!!
 string getNeighborFileName(int lpId, string graphFileName)
 {
-	return graphFileName + "_links/" + lpId + ".txt";
+	string ret = (graphFileName + "_links/") + (lpId + ".txt");
+	return ret;
 }
 
 void loadNeighbors(LP* lp, string fileName)
@@ -187,9 +178,8 @@ void doLoadLink(int rank, int p, string fileName, LPMap &lpMap)
 			lpMap[linkId] = new LP(linkId);
 
 			//Load neighbors
-			loadNeighbors(lpMap[linkid]);
+			loadNeighbors(lpMap[linkId], fileName);
 		}
-
 		inFile.close();
 	}
 

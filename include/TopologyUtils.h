@@ -27,4 +27,9 @@ int coorToId(int row, int col, int gridSize);
 void idToCoor(int id, int gridSize);
 
 int getRank(int lpId);
+
+void doLoadLink(int rank, int p, string fileName, LPMap &lpMap);
+
+void doLoadNode();
+
 #endif
