@@ -12,6 +12,11 @@ LP::LP(int id)
 	LP::totalEvent = 0;
 }
 
+int LP::getId()
+{
+	return id;
+}
+
 int LP::getTotalProcessedEvent()
 {
 	return totalEvent;

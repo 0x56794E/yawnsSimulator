@@ -139,13 +139,14 @@ void loadScalefreeLP(MODEL_TYPE type, int rank, int p, string fileName, LPMap &l
 //INDEPENDENT of the number of procs being used!!!
 string getNeighborFileName(int lpId, string graphFileName)
 {
-	string ret = graphFileName + "_links/" + to_string(lpId) + ".txt";
+	string ret = graphFileName + "link_nei/" + to_string(lpId) + ".txt";
 	return ret;
 }
 
-void loadNeighbors(LP* lp, string fileName)
+void loadNeighbors(LP* lp, string graph_file_name)
 {
-	ifstream inFile (fileName);
+	string nei_file = graph_file_name + "_link_nei/" + to_string(lp->getId()) + ".txt";
+	ifstream inFile (getNeighborFileName(lp->getId(), graph_file_name));
 	int neiId;
 
 	if (inFile.is_open())
@@ -182,7 +183,7 @@ void doLoadLink(int rank, int p, string fileName, LPMap &lpMap)
 			//Construct LP
 			lpMap[linkId] = new LP(linkId);
 
-			//Load neighbors
+			//Load neighbors for ea link
 			loadNeighbors(lpMap[linkId], fileName);
 		}
 		inFile.close();

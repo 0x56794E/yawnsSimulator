@@ -24,6 +24,7 @@ class LP
 	
   public:
   	LP(int id);
+  	int getId();
   	void addNeighbor(int); //Add a nei's ID
 	int getTotalProcessedEvent();
 	int getFELSize();
