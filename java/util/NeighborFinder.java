@@ -117,7 +117,7 @@ public class NeighborFinder
     private void writeToFile() throws IOException
     {
         //Make dir to store these files
-        String dirName = fileName + "_links";
+        String dirName = fileName + "_link_nei";
         new File(dirName).mkdir();
         
         for (Link link : linkMap.values())

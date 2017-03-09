@@ -1,11 +1,14 @@
 #include <limits> //For max val of int
 #include "mpi.h"
+#include <string> //for string
 
 //own includes
 #include "SE.h"
 #include "TopologyUtils.h"
 #include "TrafficLoader.h"
 #include "Communicator.h"
+
+using namespace std;
 
 const int MAX_INT = std::numeric_limits<int>::max();
 const int INTENDED_P_COUNT = 4;
@@ -19,9 +22,8 @@ SE::SE(int lpCount, int rank, int gridSize)
 	this->rank = rank;
 
 	//Load LPs & init msgCount
-//	loadLP(rank, lpCount, gridSize, lpMap, minRow, maxRow, minCol, maxCol);
-
-	loadScalefreeLP(LINK, rank, lpCount, "test_graph2.txt", lpMap);
+	string graph_file_name = "test_g2";
+	loadScalefreeLP(LINK, rank, lpCount, "test_g2", lpMap);
 
 
 	//init msg count to other procs
@@ -30,10 +32,10 @@ SE::SE(int lpCount, int rank, int gridSize)
 		msgCount[i] = 0;
 
 	//load initial packets/msgs for ea LP here
-	if (lpCount == 1)
-		loadTrafficForGrid(INTENDED_P_COUNT, gridSize, lpMap);
-	else
-		loadTrafficForGrid(rank, lpCount, gridSize, lpMap);
+//	if (lpCount == 1)
+//		loadTrafficForGrid(INTENDED_P_COUNT, gridSize, lpMap);
+//	else
+	loadScalefreeTraffic(rank, lpCount, graph_file_name, lpMap);
 }
 
 /**

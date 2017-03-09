@@ -26,7 +26,7 @@ void loadTrafficForGrid(int intendedPCount, int gridSize, map<int, LP*> &lpMap)
 		loadTrafficForGrid(rank, intendedPCount, gridSize, lpMap);
 }
 
-void loadTrafficForGrid(int rank, int p, int gridSize, map<int, LP*> &lpMap)
+void loadTrafficForGrid(int rank, int p, int gridSize, LPMap &lpMap)
 {
 	ifstream infile (to_string(rank) + "_" + to_string(p) + "_traffic_" + to_string(gridSize));
 	int stopCount, startTime, row, col, eCount = 1;
@@ -54,4 +54,34 @@ void loadTrafficForGrid(int rank, int p, int gridSize, map<int, LP*> &lpMap)
 
 	printf("Rank %d finished loading traffic\n", rank);
 	infile.close();
+}
+
+void loadScalefreeTraffic(int rank, int p, string graph_file_name, LPMap &lp_map)
+{
+	//file name format: <graph_file_name>_traffic_p_rank
+	string file_name = graph_file_name + "_traffic_" + to_string(p) + "_" + to_string(rank);
+	ifstream infile (file_name);
+
+	//Start LP, start time, stop count
+	int startLP, startTime, stopCount;
+
+	//line by line; ea line is an event for an LP
+	string line;
+	while (getline(infile, line))
+	{
+		istringstream iss(line);
+		iss >> startLP >> startTime >> stopCount;
+
+		//Initial event
+		Event* event = new Event(startTime);
+
+
+		//schedule event on appropriate LP
+		int nextStop = event->peekNextStop();
+		lpMap[nextStop]->scheduleEvent(event);
+		++eCount;
+	}
+
+
+	printf("Finishing loading traffic for rank %d\n", rank);
 }

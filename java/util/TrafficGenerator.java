@@ -85,8 +85,6 @@ public class TrafficGenerator
             //Output format (ea line): <start LP> <arrival time> <num stop>
             lines.add(String.format("%s %d %d\n", toks[0], startTime, numStop));
         }
-        
-        
     }
     
     /**

@@ -7,16 +7,15 @@ using namespace std;
 class Event
 {
 	int timestamp;
-	queue<int> stops;
+	int stop_count;
+	int cur_stop_idx; //= [0, stop_count - 1]
 	
   public:
-	Event (int ts);
+	Event (int ts, int stop_count);
 	int getTimestamp();
-	int getRemainStopCount();
-	void addStop(int stop);
+	int getStopCount();
+	int getCurrentStopIdx();
 	void setTimestamp(int); //to reuse the event for same-proc comm
-	int nextStop(); //return the id of the next stop; remove it from the queue
-	int peekNextStop(); //return the id of the next stop WIHOUT removing it from the queue
 };
 
 #endif

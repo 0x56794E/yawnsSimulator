@@ -85,6 +85,7 @@ void genTrafficMultiForGrid(int p, int gridSize)
 	}
 }
 	
+//OBSOLETE!!! See java version
 //Generate traffic for scale-free topology
 void genTrafficForScalefree(string graphFileName, int p)
 {
@@ -96,7 +97,7 @@ void genTrafficForScalefree(string graphFileName, int p)
 
 	//Output format:
 	//Each line:
-	//start_stop_start_time stop_count
+	//<start_stop/LP's ID> <start_time> <stop_count>
 	//File name format: <graph_file_name>_p_rank
 	//where p: num of proc to be used
 	//rank: the rank of the proc this file is for
@@ -117,7 +118,7 @@ void genTrafficForScalefree(string graphFileName, int p)
 
 
 		//Gen the traffic for ea LP
-
+		//TODO:
 
 		outfile.close();
 		infile.close();
