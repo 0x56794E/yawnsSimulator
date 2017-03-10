@@ -19,6 +19,7 @@
 #include <stdio.h>      /* printf, fopen */
 #include <stdlib.h>     /* exit, EXIT_FAILURE */
 #include <string>
+#include <mpi.h> //for mpi stuff
 
 //My stuff
 #include "TopologyUtils.h"
@@ -196,7 +197,7 @@ void doLoadLink(int rank, int p, string fileName, LPMap &lpMap)
 	//==> Do algatherv => do all gather on sizes first
 	//a. Do allgather on the sizes
 	int sizes[4];
-	int size = linkIds->size();
+	int size = linkIds.size();
 	MPI_Allgather(&size, 1, MPI_INT, &sizes, 1, MPI_INT, MPI_COMM_WORLD);
 
 	printf("Rank %d done getting sizes\n", rank);
