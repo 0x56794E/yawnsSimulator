@@ -26,16 +26,6 @@
 #include "TopologyUtils.h"
 
 /**
- * Load the given rank map.
- * Key: rank
- * Value: pair of min Id and max Id (inclusive)
- */
-void loadRankMap(map<int, pair<int, int>> &rankMap)
-{
-
-}
-
-/**
  * IDEALLY, this should be called ONCE at the beginning.
  * Keep a map or sth
  * @param: id of lp rep link
@@ -142,12 +132,19 @@ void doLoadLink(int rank, int p, string fileName, LPMap &lpMap, map<int, pair<in
 	}
 
 	//(2) Load the rank map so all procs know which LP on which proc?
-	//Do all reduce on the size => total num of LPs
+	//Do all gather on the size
 	int l_size = linkIds.size(); //local
-	int g_size; //global
-	MPI_Allreduce(&l_size, &g_size, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
-	printf("Rank %d found %d LPs total\n", rank, g_size);
+	int g_sizes[p]; //global
+	int min, max = -1;
+	MPI_Allgather(&l_size, 1, MPI_INT, &g_sizes, 1, MPI_INT, MPI_COMM_WORLD);
 
+	//Load the rank map
+	for (int i = 0; i < p; ++i)
+	{
+		min = max + 1;
+		max = min + g_sizes[i] - 1;
+		rankMap[i] = pair<int,int>(min, max);
+	}
 }
 
 void doLoadNode()
