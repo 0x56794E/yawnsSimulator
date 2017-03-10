@@ -23,93 +23,6 @@
 
 //My stuff
 #include "TopologyUtils.h"
-
-/** 
- * Given the rank, find appropriate input file to load all lps that are supposed to be on this proc.
- * Assume the topology is a grid and the boundaries of the portion a proc is to rep are defined in the file.
- * File has the following format: (inclusive)
- * <min row> <max row> <min col> <max col>
- *
- * @param rank: rank of the proc
- * @param p: number of processors
- */
-void loadLP(int rank, int p, int gridSize, map<int, LP*> &lpMap, int &minRow, int &maxRow, int &minCol, int &maxCol)
-{
-	int id;
-	if (p == 1) //If there's only ONE proc => no need to read from lp file. all lps on same proc
-	{
-		minRow = 0;
-		minCol = 0;
-		maxRow = gridSize - 1;
-		maxCol = gridSize - 1;
-
-		for (int row = 0; row < gridSize; ++row)
-		{
-			for (int col = 0; col < gridSize; ++col)
-			{
-				id = coorToId(row, col, gridSize); 
-				lpMap[id] = new LP(id);
-			}
-		}
-	}
-	else
-	{
-		ifstream inFile (to_string(rank) + "_" + to_string(p) + "_lps_" + to_string(gridSize));
-	
-		if (inFile.is_open())
-		{
-			while (inFile >> minRow >> maxRow >> minCol >> maxCol)
-			{
-				//Construct all LPs with coors in given range
-				for (int row = minRow; row <= maxRow; ++row)
-				{
-					for (int col = minCol; col <= maxCol; ++col)
-					{
-						id = coorToId(row, col, gridSize); 
-						lpMap[id] = new LP(id);
-					}
-				}
-			}	
-
-			inFile.close();
-		}
-	}	
-}
-
-int coorToId(int row, int col, int gridSize)
-{
-	return row * gridSize + col;
-}
-
-void idToCoor(int id, int gridSize, int &row, int &col)
-{
-	row = id / gridSize;
-	col = id % gridSize;
-}
-
-/**
- * TODO: VERY HACKY!!!
- * FIX THIS to handle scale-free case!!
- */
-int getRank(int lpId)
-{
-	int row, col;
-	idToCoor(lpId, 100, row, col);
-	
-	if (row < 50) //rank 0 or 1
-	{
-		return col < 50 ? 0 : 1;
- 	}
-	else //rank 2 or 3
-	{
-		return col < 50 ? 3 : 2;
-	}
-}
-
-/********************/
-/* SCALE FREE STUFF */
-/********************/
-
 /**
  * Load scale-free topology
  * @param type: model type
@@ -196,17 +109,35 @@ void doLoadLink(int rank, int p, string fileName, LPMap &lpMap)
 	//(2) do bcast here so all procs know which LP on which proc?
 	//==> Do algatherv => do all gather on sizes first
 	//a. Do allgather on the sizes
-	int sizes[4];
+	int sizes[p];
 	int size = linkIds.size();
 	MPI_Allgather(&size, 1, MPI_INT, &sizes, 1, MPI_INT, MPI_COMM_WORLD);
-
 	printf("Rank %d done getting sizes\n", rank);
-	//for (int i = 0; )
+
 	//b. Do allgatherv on the actual data
+	int displs[p];
+
+	//Links are numbered as they appeared in link
+
 }
 
 void doLoadNode()
 {
 
 }
+
+/**
+ *
+ *   rem = n % p
+    counts = [] #number of links for ea proc
+    count = math.floor(n/p)
+
+    for i in range (p):
+        counts.append(count)
+
+    #Additionally, first "rem" proc has 1 more
+    for i in range (rem):
+        counts[i] = counts[i] + 1
+ *
+ */
 
