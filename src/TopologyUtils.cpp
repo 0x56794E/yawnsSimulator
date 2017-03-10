@@ -26,6 +26,16 @@
 #include "TopologyUtils.h"
 
 /**
+ * Load the given rank map.
+ * Key: rank
+ * Value: pair of min Id and max Id (inclusive)
+ */
+void loadRankMap(map<int, pair<int, int>> &rankMap)
+{
+
+}
+
+/**
  * IDEALLY, this should be called ONCE at the beginning.
  * Keep a map or sth
  * @param: id of lp rep link
@@ -35,7 +45,7 @@
  */
 int getLinkRank(int lpId, int n, int p)
 {
-	int rem = n % p
+	int rem = n % p;
 	int counts[p]; //number of links for ea proc
 	int count = (int) floor(n/p);
 
@@ -57,12 +67,12 @@ int getLinkRank(int lpId, int n, int p)
  * @param lpMap: the lpMap for this proc (ONLY one instance per proc)
  * TODO: spec network size and stuff
  */
-void loadScalefreeLP(MODEL_TYPE type, int rank, int p, string fileName, LPMap &lpMap)
+void loadScalefreeLP(MODEL_TYPE type, int rank, int p, string fileName, LPMap &lpMap, map<int, pair<int, int>> &rankMap)
 {
 	switch (type)
 	{
 		case LINK:
-			doLoadLink(rank, p, fileName, lpMap);
+			doLoadLink(rank, p, fileName, lpMap, rankMap);
 			break;
 
 		case NODE:
@@ -104,7 +114,7 @@ void loadNeighbors(LP* lp, string graph_file_name)
  * fileName: name of the graph file
  * 1a => file containing LPs for proc rank: fileName_p_rank
  */
-void doLoadLink(int rank, int p, string fileName, LPMap &lpMap)
+void doLoadLink(int rank, int p, string fileName, LPMap &lpMap, map<int, pair<int, int>> &rankMap)
 {
 	//(1) eac proc reads from its own graph file
 	//1a. Construct LPMap for the proc
@@ -131,19 +141,12 @@ void doLoadLink(int rank, int p, string fileName, LPMap &lpMap)
 		inFile.close();
 	}
 
-	//TODO: MAY NOT NEED THIS!!!
-	//(2) do bcast here so all procs know which LP on which proc?
-	//==> Do algatherv => do all gather on sizes first
-	//a. Do allgather on the sizes
-	int sizes[p];
-	int size = linkIds.size();
-	MPI_Allgather(&size, 1, MPI_INT, &sizes, 1, MPI_INT, MPI_COMM_WORLD);
-	printf("Rank %d done getting sizes\n", rank);
-
-	//b. Do allgatherv on the actual data
-	int displs[p];
-
-	//Links are numbered as they appeared in link
+	//(2) Load the rank map so all procs know which LP on which proc?
+	//Do all reduce on the size => total num of LPs
+	int l_size = linkIds.size(); //local
+	int g_size; //global
+	MPI_Allreduce(&l_size, &g_size, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+	printf("Rank %d found %d LPs total\n", rank, g_size);
 
 }
 

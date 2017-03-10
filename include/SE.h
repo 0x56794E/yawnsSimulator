@@ -1,10 +1,11 @@
 #ifndef SE_H
 #define SE_H
 
+#include <map>
+#include <string>
+
 #include "Event.h"
 #include "LP.h"
-
-#include <string> 
 
 using namespace std;
 
@@ -22,7 +23,7 @@ class SE
 
 	//LPs
 	LPMap lpMap; //Map of all LP residing on this proc
-				 //Map spec range of LP IDs on ea proc; key: rank; val: array of size 2: [minID, maxId]
+	map<int, pair<int, int>> rankMap; //Map spec range of LP IDs on ea proc; key: rank; val: array of size 2: [minID, maxId]
 
 	//Methods
 	int compLBTS(); //Determine LBTS for current iteration/epoch

@@ -1,7 +1,6 @@
 #include <limits> //For max val of int
 #include "mpi.h"
 #include <string> //for string
-
 //own includes
 #include "SE.h"
 #include "TopologyUtils.h"
@@ -16,6 +15,8 @@ const int INTENDED_P_COUNT = 4;
 /******************
  * PUBLIC members *
  ******************/
+//TODO: REMOVE GRID SIZE!!!
+//Find num of LPs in total?
 SE::SE(int lpCount, int rank, int gridSize)
 {
 	this->lpCount = lpCount;
@@ -23,9 +24,7 @@ SE::SE(int lpCount, int rank, int gridSize)
 
 	//Load LPs & init msgCount
 	string graph_file_name = "test_g2";
-	loadScalefreeLP(LINK, rank, lpCount, "test_g2", lpMap);
-	loadRankMap(); //map to det which proc an LP is on
-
+	loadScalefreeLP(LINK, rank, lpCount, "test_g2", lpMap, rankMap);
 
 	//init msg count to other procs
 	msgCount = new int[lpCount];
