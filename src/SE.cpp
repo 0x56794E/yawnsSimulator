@@ -24,6 +24,7 @@ SE::SE(int lpCount, int rank, int gridSize)
 	//Load LPs & init msgCount
 	string graph_file_name = "test_g2";
 	loadScalefreeLP(LINK, rank, lpCount, "test_g2", lpMap);
+	loadRankMap(); //map to det which proc an LP is on
 
 
 	//init msg count to other procs

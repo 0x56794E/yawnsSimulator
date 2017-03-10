@@ -22,10 +22,7 @@ class SE
 
 	//LPs
 	LPMap lpMap; //Map of all LP residing on this proc
-	int minRow;
-	int maxRow;
-	int minCol;
-	int maxCol;
+				 //Map spec range of LP IDs on ea proc; key: rank; val: array of size 2: [minID, maxId]
 
 	//Methods
 	int compLBTS(); //Determine LBTS for current iteration/epoch

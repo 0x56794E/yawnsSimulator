@@ -20,9 +20,34 @@
 #include <stdlib.h>     /* exit, EXIT_FAILURE */
 #include <string>
 #include <mpi.h> //for mpi stuff
+#include <math.h> //for floor stuff
 
 //My stuff
 #include "TopologyUtils.h"
+
+/**
+ * IDEALLY, this should be called ONCE at the beginning.
+ * Keep a map or sth
+ * @param: id of lp rep link
+ * @param: total number of links
+ * @param: total number of procs
+ * @return rank the link (lp) is on
+ */
+int getLinkRank(int lpId, int n, int p)
+{
+	int rem = n % p
+	int counts[p]; //number of links for ea proc
+	int count = (int) floor(n/p);
+
+	for (int i = 0; i < p; ++i)
+		counts[i] = count;
+
+	//Additionally, first "rem" proc has 1 more
+	for (int i = 0; i < rem; ++i)
+		counts[i] += 1;
+
+}
+
 /**
  * Load scale-free topology
  * @param type: model type
@@ -106,6 +131,7 @@ void doLoadLink(int rank, int p, string fileName, LPMap &lpMap)
 		inFile.close();
 	}
 
+	//TODO: MAY NOT NEED THIS!!!
 	//(2) do bcast here so all procs know which LP on which proc?
 	//==> Do algatherv => do all gather on sizes first
 	//a. Do allgather on the sizes
