@@ -42,10 +42,22 @@ int done(MPI_Request req)
 	return flag;
 }
 
+int genNextStop(LPMap lpMap, int curStopId)
+{
+	//Get the current LP
+	LP curStop = lpMap->get(curStopId);
+
+	//TODO: rand gen next stop
+	int nextStopId = 0;
+
+	return nextStopId;
+}
+
 void sendMsg(Event* event, LPMap lpMap)
 {
-	//Determine which LP to send to
-	int nextStop = event->peekNextStop();
+	//Determine which LP to send to:
+	//TODO: randomly select next's neighbor
+	int nextStop = genNextStop(lpMap, event->getCurrentStopId());
 	
 	if (lpMap.find(nextStop) == lpMap.end())
 	{

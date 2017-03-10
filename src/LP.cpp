@@ -33,14 +33,16 @@ void LP::handleEvent(Event* event, LPMap lpMap)
 
 	//me - the one who's processing this event;
 	//Don't need this value. Call to remove it from queue. TODO: better name?
-	event->nextStop(); 
+	//event->nextStop();
 
-	if (event->getRemainStopCount() > 0)
+	if (event->getCurrentStopIdx() < event->getStopCount())
 	{
 		//Send msg to nextStop
 		event->setTimestamp(event->getTimestamp() + LA);
 		sendMsg(event, lpMap);
 	}
+
+	event->handled();
 }
 
 int LP::getFELSize()

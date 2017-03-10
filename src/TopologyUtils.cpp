@@ -174,6 +174,8 @@ void doLoadLink(int rank, int p, string fileName, LPMap &lpMap)
 			+ to_string(p) + "_"
 			+ to_string(rank));
 
+	vector<int> linkIds;
+
 	//Each line: <link ID> <src node ID> <dst node ID>
 	int linkId, srcId, dstId;
 	if (inFile.is_open())
@@ -182,6 +184,7 @@ void doLoadLink(int rank, int p, string fileName, LPMap &lpMap)
 		{
 			//Construct LP
 			lpMap[linkId] = new LP(linkId);
+			linkIds.push_back(linkId);
 
 			//Load neighbors for ea link
 			loadNeighbors(lpMap[linkId], fileName);
@@ -189,8 +192,16 @@ void doLoadLink(int rank, int p, string fileName, LPMap &lpMap)
 		inFile.close();
 	}
 
-	//(2) do all-to-all bcast so all procs know which LP on which proc?
+	//(2) do bcast here so all procs know which LP on which proc?
+	//==> Do algatherv => do all gather on sizes first
+	//a. Do allgather on the sizes
+	int sizes[4];
+	int size = linkIds->size();
+	MPI_Allgather(&size, 1, MPI_INT, &sizes, 1, MPI_INT, MPI_COMM_WORLD);
 
+	printf("Rank %d done getting sizes\n", rank);
+	//for (int i = 0; )
+	//b. Do allgatherv on the actual data
 }
 
 void doLoadNode()
