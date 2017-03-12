@@ -7,12 +7,24 @@
 
 #include "LP.h"
 
+//FIELDS
+
 //Tag for "regular" msgs
 const int MSG_TAG = 0;
 
+//allow inbox to reach up to 25 msgs.
+const int MAX_SIZE = 25;
+
+//Keep outbox here to check occasionally
+vector<int*> outboxMsg;
+vector<MPI_Request> outboxStatus;
+
+int lastEpochCount = 0;
+int currentEpochCount = 0;
+
 void newEpoch();
 
-void sendMsg(Event* event, LPMap lpMap);
+void sendMsg(Event* event, LPMap &lpMap, int nextStopId, map<int, pair<int, int>> &rankMap);
 
 /**
  * Receive msg and schedule it on appropriate LP

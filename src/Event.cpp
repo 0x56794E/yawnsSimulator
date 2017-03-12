@@ -7,6 +7,7 @@ Event::Event(int ts, int stop_count, int lpId)
 	Event::timestamp = ts;
 	Event::stop_count = stop_count;
 	Event::lpId = lpId;
+	Event::stop_passed = 1;
 }
 
 int Event::getTimestamp()
@@ -19,9 +20,9 @@ int Event::getStopCount()
 	return stop_count;
 }
 
-int Event::getCurrentStopIdx()
+int Event::getStopPassed()
 {
-	return cur_stop_idx;
+	return stop_passed;
 }
 
 int Event::getCurrentStopId()
@@ -31,7 +32,7 @@ int Event::getCurrentStopId()
 
 void Event::handled()
 {
-	cur_stop_idx++;
+	stop_passed++;
 }
 
 void Event::setTimestamp(int ts)

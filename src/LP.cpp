@@ -31,22 +31,28 @@ void LP::scheduleEvent(Event* event)
 	fel.push(event);
 }
 
-void LP::handleEvent(Event* event, LPMap lpMap)
+/**
+ * TODO: FIX THIS!!!!
+ * Gen next stop on fly
+ */
+void LP::handleEvent(Event* event, LPMap &lpMap, map<int, pair<int>> &rankMap)
 {
 	totalEvent++;
+	event->handled(); //to inc num of stops passed
 
-	//me - the one who's processing this event;
-	//Don't need this value. Call to remove it from queue. TODO: better name?
-	//event->nextStop();
-
-	if (event->getCurrentStopIdx() < event->getStopCount())
+	//THIS is the last stop
+	if (event->getStopPassed() == event->getStopCount())
+	{
+		//TODO: what?
+	}
+	//TODO: no need for if. Just 2b safe :D => will check
+	else if (event->getStopPassed() < event->getStopCount())
 	{
 		//Send msg to nextStop
 		event->setTimestamp(event->getTimestamp() + LA);
-		sendMsg(event, lpMap);
+		sendMsg(event, lpMap, getRandNeiId(), rankMap);
 	}
 
-	event->handled();
 }
 
 int LP::getFELSize()

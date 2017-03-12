@@ -29,7 +29,7 @@ class LP
 	int getRandNeiId();
   	int getTotalProcessedEvent();
 	int getFELSize();
-	void handleEvent(Event*, LPMap lpMap);
+	void handleEvent(Event*, LPMap &lpMap, map<int, pair<int, int>> &rankMap);
 	void scheduleEvent(Event*);
 	int done();
 	int peekNextTimestamp(); //If queue is empty, return MAX_INT

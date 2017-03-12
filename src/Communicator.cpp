@@ -5,14 +5,9 @@
 
 using namespace std;
 
-const int MAX_SIZE = 25; //allow inbox to reach up to 100 msgs.
-
-//Keep outbox here to check occasionally
-vector<int*> outboxMsg;
-vector<MPI_Request> outboxStatus;
-int lastEpochCount = 0;
-int currentEpochCount = 0;
-
+/**
+ * TODO: check if this works!!!!
+ */
 void newEpoch()
 {
 	//clear the first lastEpochCount msg in the vector
@@ -56,38 +51,43 @@ int genNextStop(LPMap lpMap, int curStopId)
 	return nextStopId;
 }
 
-//TODO: FIX this
-void sendMsg(Event* event, LPMap lpMap)
+/**
+ * Send the msg
+ * Determine whether the next stop is local.
+ * If local, simply schedule the event
+ * Otherwise, send the msg to appropriate proc
+ */
+void sendMsg(Event* event, LPMap lpMap, int nextStopId, int<int, pair<int, int>> &rankMap)
 {
-	//Determine which LP to send to:
-	//TODO: randomly select next's neighbor
-	int nextStop = genNextStop(lpMap, event->getCurrentStopId());
-	
-	if (lpMap.find(nextStop) == lpMap.end())
+	//If the LP is NOT on this proc
+	//Send the msg to other proc
+	//Event has 3 main pc:
+	// - timestamp (already updated)
+	// - stop_count (unchanged)
+	// - stop_passed (already updated)
+	if (lpMap.find(nextStopId) == lpMap.end())
 	{
-		//Next stop is NOT on this proc
-		//send to other proc
 		//1. Turn the event into an array of int
-//		int size = event->getRemainStopCount() + 1;
-//		int* data =  new int[size]; //(int*)malloc(sizeof(int) * size);
-//		data[0] = event->getTimestamp();
-//		for (int i = 1; i < size; ++i)
-//			data[i] = event->nextStop();
-//
-//		//2. Send the array
-//		MPI_Request req;
-//		MPI_Isend(data, size, MPI_INT, getRank(nextStop), MSG_TAG, MPI_COMM_WORLD, &req);
-//
-//        //Save this to free later
-//		outboxMsg.push_back(data);
-//		outboxStatus.push_back(req);
-//		++currentEpochCount;
+		//Following order: [timestamp, stop_count, stop_passed]
+		int* data = new int[3](); //dynamic!! Delete it somewhere
+		data[0] = event->getTimestamp();
+		data[1] = event->getStopCount();
+		data[2] = event->getStopPassed();
+
+		//2. Send the array
+		MPI_Request req;
+		MPI_Isend(data, size, MPI_INT, getRank(nextStopId), MSG_TAG, MPI_COMM_WORLD, &req);
+
+        //Save this to free later
+		outboxMsg.push_back(data);
+		outboxStatus.push_back(req);
+		++currentEpochCount;
 	}
 	else
 	{
 		//Next stop is on this proc
 		//schedule directly
-		lpMap[nextStop]->scheduleEvent(event);
+		lpMap[nextStopId]->scheduleEvent(event);
 	}
 }
 

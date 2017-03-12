@@ -52,13 +52,14 @@ void SE::run()
 		//TODO: this can be done in another thread while e proc is IP
 		receiveMsgs();
 
+		//TODO: WTF GOIN ON HERE????
 		//Handle all events w ts < lbts
 		for (LPMap::const_iterator it = lpMap.begin(); it != lpMap.end(); ++it)
 		{
 			lp = it->second;
 			while (!lp->done() && lp->peekNextTimestamp() <= global_lbts)
 			{
-				lp->handleEvent(lp->nextEvent(), lpMap);				
+				lp->handleEvent(lp->nextEvent(), lpMap, rankMap);
 			}
 		}
 
