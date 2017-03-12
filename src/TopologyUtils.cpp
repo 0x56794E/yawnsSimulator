@@ -78,14 +78,14 @@ void loadScalefreeLP(MODEL_TYPE type, int rank, int p, string fileName, LPMap &l
 //INDEPENDENT of the number of procs being used!!!
 string getNeighborFileName(int lpId, string graphFileName)
 {
-	string ret = graphFileName + "link_nei/" + to_string(lpId) + ".txt";
+	string ret = graphFileName + "_link_nei/" + to_string(lpId) + ".txt";
 	return ret;
 }
 
 void loadNeighbors(LP* lp, string graph_file_name)
 {
-	string nei_file = graph_file_name + "_link_nei/" + to_string(lp->getId()) + ".txt";
-	ifstream inFile (getNeighborFileName(lp->getId(), graph_file_name));
+	string nei_file = getNeighborFileName(lp->getId(), graph_file_name);
+	ifstream inFile (nei_file);
 	int neiId;
 
 	if (inFile.is_open())
@@ -96,6 +96,11 @@ void loadNeighbors(LP* lp, string graph_file_name)
 		}
 
 		inFile.close();
+	}
+	else
+	{
+		cout << "ERROR: cannot open file: " << nei_file << endl;
+		exit(1);
 	}
 }
 

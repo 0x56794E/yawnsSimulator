@@ -124,6 +124,7 @@ void receiveMsg(MPI_Status status, LPMap lpMap)
 	MPI_Recv(&recv_buf, MSG_SIZE, MPI_INT, status.MPI_SOURCE, MSG_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
 	//Construct event obj and schedule on appropriate LP
-	Event e = new Event (recv_buf[TIMESTAMP], recv_buf[STOP_COUNT], recv_buf[HANDLER_ID], recv_buf[STOP_PASSED]);
+	Event* e = new Event (recv_buf[TIMESTAMP], recv_buf[STOP_COUNT], recv_buf[HANDLER_ID], recv_buf[STOP_PASSED]);
 
-	lpMap[recv_buf[HANDLER_ID]]->scheduleEvent(e);}
+	lpMap[recv_buf[HANDLER_ID]]->scheduleEvent(e);
+}

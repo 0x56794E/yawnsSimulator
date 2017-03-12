@@ -45,12 +45,16 @@ void SE::run()
 
 	while (!local_done || !global_done)
 	{
+		//printf("Rank %d starting epoch %d\n", rank, epoch);
+
 		//Determine LBTS
 		global_lbts = compLBTS();
+		//printf("\tRank %d, epoch %d: finish comp LBTS: %d\n", rank, epoch, global_lbts);
 
 		//Receive all msgs from prev epoch
 		//TODO: this can be done in another thread while e proc is IP
 		receiveMsgs();
+		//printf("\tRank %d, epoch %d: finish recv Msgs\n", rank, epoch);
 
 		//TODO: WTF GOIN ON HERE????
 		//Handle all events w ts < lbts
@@ -62,10 +66,13 @@ void SE::run()
 				lp->handleEvent(lp->nextEvent(), lpMap, rankMap);
 			}
 		}
+		//printf("\tRank %d, epoch %d: finish handling events\n", rank, epoch);
 
 		//Reset msgCount
 		for (int i = 0; i < lpCount; ++i)
 			msgCount[i] = 0;
+
+		//printf("\tRank %d, epoch %d: finish resetting msg ct\n", rank, epoch);
 
 		//Advance epoch count
 		++epoch;
@@ -119,8 +126,7 @@ void SE::receiveMsgs()
 		if (hasMsg)
 		{
 			//receiv msg here
-			//TODO: need to examine and determine the LP to forward to
-			//Msg would be an array of int <timestamp of msg> <next stop id => the LP to forward to> <the rest of the stops>
+			//Msg would be an array of ints (see receiveMsg for more detail)
 			receiveMsg(status, lpMap);
 		}
 
