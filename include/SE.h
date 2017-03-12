@@ -31,7 +31,7 @@ class SE
 	int done(); //true if all LPs on this proc are done
 
   public:
-  	SE(int lpCount, int rank, int gridSize);
+  	SE(int lpCount, int rank, string graph_file_name);
   	void run(); //start event processing
 	int getTotalProcessedEvent(); //total number of events processed by all LPs on this SE
 };

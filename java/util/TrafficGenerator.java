@@ -30,17 +30,17 @@ public class TrafficGenerator
         
     public static void main(String[] args) throws IOException
     {
-        if (args.length < 2)
+        if (args.length < 3)
         {
-            System.out.println("Usage: java TrafficGenerator <graphFileName> <procCount>");
+            System.out.println("Usage: java TrafficGenerator <graphFileName> <procCount> <delim of file spec the edge list for ea proc>");
             System.exit(1);
         }
                 
         TrafficGenerator gen = new TrafficGenerator();
-        gen.genTraffic(args[0], Integer.parseInt(args[1]));
+        gen.genTraffic(args[0], Integer.parseInt(args[1]), args[2]);
     }
 
-    public void genTraffic(String graphFileName, int p) throws IOException
+    public void genTraffic(final String graphFileName, final int p, final String delim) throws IOException
     {
         int numPacket; //Num packet on ea LP
         int numStop; //Num stop of ea packet
@@ -56,7 +56,7 @@ public class TrafficGenerator
             //Get input file for ea proc - the LP list for ea proc
             Stream<String> lps = Files.lines(Paths.get(graphFileName + "_" + p + "_" + rank));
 
-            lps.forEach(lp -> process(lp, lines));
+            lps.forEach(lp -> process(lp, lines, delim));
             
             //Output file for ea proc
             outputFileName = graphFileName + "_traffic_" + p + "_" + rank;
@@ -67,10 +67,10 @@ public class TrafficGenerator
         }
     }
 
-    private void process(String lpInfo, List<String> lines)
+    private void process(String lpInfo, List<String> lines, final String delim)
     {
-        //Line format: ID <SRCID> <DSTID>
-        String[] toks = lpInfo.split("\\s++");
+        //Line format: <LINK ID><delim><SRCID><delim><DSTID>
+        String[] toks = lpInfo.split(delim);
         Random rand = new Random(System.currentTimeMillis());
         Random timeRand = new Random(System.currentTimeMillis());
         

@@ -24,14 +24,14 @@ int main(int argc, char* argv[])
 	//Total procs and own rank
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &p);
+	printf("Rank%d done init MPI stuff\n", rank);
 	
 	//Set up ran
-	//TODO: ea proc has own seed?
 	srand(time(NULL) + rank);
 
 	//Create the exec
-	int gridSize = 20;
-	SE se(p, rank, gridSize);
+	SE se(p, rank, "g1000_20");
+	printf("Rank %d one creating SE\n", rank);
 
 	//Start timer
 	MPI_Barrier(MPI_COMM_WORLD);

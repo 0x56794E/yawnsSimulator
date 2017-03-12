@@ -30,27 +30,36 @@ void loadScalefreeTraffic(int rank, int p, string graph_file_name, LPMap &lp_map
 	//file name format: <graph_file_name>_traffic_p_rank
 	string file_name = graph_file_name + "_traffic_" + to_string(p) + "_" + to_string(rank);
 	ifstream infile (file_name);
-	int eCount = 0;
 
-	//Start LP, start time, stop count
-	int startLP, startTime, stopCount;
-
-	//line by line; ea line is an event for an LP
-	string line;
-	while (getline(infile, line))
+	if (infile.is_open())
 	{
-		istringstream iss(line);
-		iss >> startLP >> startTime >> stopCount;
+		printf("Rank %d start loading traffic \n", rank);
+		int eCount = 0;
 
-		//Initial event
-		Event* event = new Event(startTime, stopCount, startLP, 1);
+		//Line format: Start LP, start time, stop count
+		int startLP, startTime, stopCount;
 
-		//schedule event on appropriate LP
-		lp_map[startLP]->scheduleEvent(event);
-		++eCount;
+		//line by line; ea line is an event for an LP
+		string line;
+		while (getline(infile, line))
+		{
+			istringstream iss(line);
+			iss >> startLP >> startTime >> stopCount;
+
+			//Initial event
+			Event* event = new Event(startTime, stopCount, startLP, 1);
+
+			//schedule event on appropriate LP
+			lp_map[startLP]->scheduleEvent(event);
+			++eCount;
+		}
+
+		infile.close();
+		printf("Finishing loading traffic for rank %d; Total init event = %d\n", rank, eCount);
 	}
-
-	infile.close();
-
-	printf("Finishing loading traffic for rank %d; Total init event = %d\n", rank, eCount);
+	else
+	{
+		cout << "Unable to open file " << file_name << endl;
+		exit (4);
+	}
 }

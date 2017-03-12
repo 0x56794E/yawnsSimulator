@@ -37,7 +37,7 @@ public class NeighborFinder
     {
         if (args.length < 2)
         {
-            System.out.println("Must provide input file name");
+            System.out.println("Usage: java NeighborFinder <graph file name> <delim>");
             System.exit(1);                
         }
 

@@ -114,9 +114,10 @@ void doLoadLink(int rank, int p, string fileName, LPMap &lpMap, map<int, pair<in
 	//(1) eac proc reads from its own graph file
 	//1a. Construct LPMap for the proc
 	//1b. Load the set of neighbors for ea LP
-	ifstream inFile (fileName + "_"
+	string per_proc_file_name = fileName + "_"
 			+ to_string(p) + "_"
-			+ to_string(rank));
+			+ to_string(rank);
+	ifstream inFile (per_proc_file_name);
 
 	vector<int> linkIds;
 
@@ -134,6 +135,11 @@ void doLoadLink(int rank, int p, string fileName, LPMap &lpMap, map<int, pair<in
 			loadNeighbors(lpMap[linkId], fileName);
 		}
 		inFile.close();
+	}
+	else
+	{
+		cout << "Unable to open file " << per_proc_file_name << endl;
+		exit (3);
 	}
 
 	//(2) Load the rank map so all procs know which LP on which proc?

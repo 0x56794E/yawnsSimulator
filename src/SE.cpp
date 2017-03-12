@@ -17,21 +17,23 @@ const int INTENDED_P_COUNT = 4;
  ******************/
 //TODO: REMOVE GRID SIZE!!!
 //Find num of LPs in total?
-SE::SE(int lpCount, int rank, int gridSize)
+SE::SE(int lpCount, int rank, string graph_file_name)
 {
 	this->lpCount = lpCount;
 	this->rank = rank;
 
 	//Load LPs & init msgCount
-	string graph_file_name = "test_g2";
-	loadScalefreeLP(LINK, rank, lpCount, "test_g2", lpMap, rankMap);
+	loadScalefreeLP(LINK, rank, lpCount, graph_file_name, lpMap, rankMap);
+	printf("Rank %d done loading graph\n", rank);
 
 	//init msg count to other procs
 	msgCount = new int[lpCount];
 	for (int i = 0; i < lpCount; ++i)
 		msgCount[i] = 0;
+	printf("Rank %d done init msg ct\n", rank);
 
 	loadScalefreeTraffic(rank, lpCount, graph_file_name, lpMap);
+	printf("Rank %d done loading traffic\n", rank);
 }
 
 /**
@@ -56,7 +58,6 @@ void SE::run()
 		receiveMsgs();
 		//printf("\tRank %d, epoch %d: finish recv Msgs\n", rank, epoch);
 
-		//TODO: WTF GOIN ON HERE????
 		//Handle all events w ts < lbts
 		for (LPMap::const_iterator it = lpMap.begin(); it != lpMap.end(); ++it)
 		{
