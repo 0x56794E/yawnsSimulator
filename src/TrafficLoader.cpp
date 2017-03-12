@@ -33,7 +33,7 @@ void loadScalefreeTraffic(int rank, int p, string graph_file_name, LPMap &lp_map
 
 	if (infile.is_open())
 	{
-		printf("Rank %d start loading traffic \n", rank);
+//		printf("Rank %d start loading traffic \n", rank);
 		int eCount = 0;
 
 		//Line format: Start LP, start time, stop count
@@ -55,7 +55,7 @@ void loadScalefreeTraffic(int rank, int p, string graph_file_name, LPMap &lp_map
 		}
 
 		infile.close();
-		printf("Finishing loading traffic for rank %d; Total init event = %d\n", rank, eCount);
+//		printf("Finishing loading traffic for rank %d; Total init event = %d\n", rank, eCount);
 	}
 	else
 	{

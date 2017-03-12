@@ -24,16 +24,16 @@ SE::SE(int lpCount, int rank, string graph_file_name)
 
 	//Load LPs & init msgCount
 	loadScalefreeLP(LINK, rank, lpCount, graph_file_name, lpMap, rankMap);
-	printf("Rank %d done loading graph\n", rank);
+//	printf("Rank %d done loading graph\n", rank);
 
 	//init msg count to other procs
 	msgCount = new int[lpCount];
 	for (int i = 0; i < lpCount; ++i)
 		msgCount[i] = 0;
-	printf("Rank %d done init msg ct\n", rank);
+//	printf("Rank %d done init msg ct\n", rank);
 
 	loadScalefreeTraffic(rank, lpCount, graph_file_name, lpMap);
-	printf("Rank %d done loading traffic\n", rank);
+//	printf("Rank %d done loading traffic\n", rank);
 }
 
 /**

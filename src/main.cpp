@@ -24,14 +24,14 @@ int main(int argc, char* argv[])
 	//Total procs and own rank
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &p);
-	printf("Rank%d done init MPI stuff\n", rank);
+//	printf("Rank%d done init MPI stuff\n", rank);
 	
 	//Set up ran
 	srand(time(NULL) + rank);
 
 	//Create the exec
-	SE se(p, rank, "g1000_20");
-	printf("Rank %d one creating SE\n", rank);
+	SE se(p, rank, "g2000_20");
+//	printf("Rank %d one creating SE\n", rank);
 
 	//Start timer
 	MPI_Barrier(MPI_COMM_WORLD);
