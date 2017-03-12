@@ -12,11 +12,13 @@ class Event
 	int stop_passed; //= [1, stop_count]; == stop_count means we're handling the last stop
 	
   public:
-	Event (int ts, int stop_count, int lpId);
+	Event (int ts, int stop_count, int lpId, int stop_passed);
 	int getTimestamp();
 	int getStopCount();
 	int getStopPassed(); //ONE based; number of stops have passed
 	int getCurrentStopId();  //ID of current LP
+
+	//Modifier
 	void handled(); //to inc stop idx
 	void setTimestamp(int); //to reuse the event for same-proc comm
 };

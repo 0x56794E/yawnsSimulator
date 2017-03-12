@@ -43,7 +43,7 @@ void loadScalefreeTraffic(int rank, int p, string graph_file_name, LPMap &lp_map
 		iss >> startLP >> startTime >> stopCount;
 
 		//Initial event
-		Event* event = new Event(startTime, stopCount, startLP);
+		Event* event = new Event(startTime, stopCount, startLP, 1);
 
 		//schedule event on appropriate LP
 		lp_map[startLP]->scheduleEvent(event);

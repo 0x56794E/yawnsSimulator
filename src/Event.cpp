@@ -2,12 +2,12 @@
 
 using namespace std;
 
-Event::Event(int ts, int stop_count, int lpId)
+Event::Event(int ts, int stop_count, int lpId, int stop_passed)
 {
 	Event::timestamp = ts;
 	Event::stop_count = stop_count;
 	Event::lpId = lpId;
-	Event::stop_passed = 1;
+	Event::stop_passed = stop_passed;
 }
 
 int Event::getTimestamp()

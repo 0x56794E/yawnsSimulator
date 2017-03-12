@@ -74,10 +74,11 @@ void sendMsg(Event* event, LPMap &lpMap, int nextStopId, map<int, pair<int, int>
 	{
 		//1. Turn the event into an array of int
 		//Following order: [timestamp, stop_count, stop_passed]
-		int* data = new int[3](); //dynamic!! Delete it somewhere
-		data[0] = event->getTimestamp();
-		data[1] = event->getStopCount();
-		data[2] = event->getStopPassed();
+		int* data = new int[MSG_SIZE](); //dynamic!! Delete it somewhere
+		data[TIMESTAMP] = event->getTimestamp();
+		data[STOP_COUNT] = event->getStopCount();
+		data[STOP_PASSED] = event->getStopPassed();
+		data[HANDLER_ID] = event->getCurrentStopId();
 
 		//2. Send the array
 		MPI_Request req;
@@ -97,7 +98,7 @@ void sendMsg(Event* event, LPMap &lpMap, int nextStopId, map<int, pair<int, int>
 			}
 		}
 
-		MPI_Isend(data, 3, MPI_INT, recvRank, MSG_TAG, MPI_COMM_WORLD, &req);
+		MPI_Isend(data, MSG_SIZE, MPI_INT, recvRank, MSG_TAG, MPI_COMM_WORLD, &req);
 
         //Save this to free later
 		outboxMsg.push_back(data);
@@ -113,24 +114,16 @@ void sendMsg(Event* event, LPMap &lpMap, int nextStopId, map<int, pair<int, int>
 }
 
 
+/**
+ * FIX THIS!!! (mar 11, 17)
+ * Receive the array of 3 ints!!!
+ */
 void receiveMsg(MPI_Status status, LPMap lpMap)
 {
-	//determine how many ints to be receiv
-	int count;
-	MPI_Get_count(&status, MPI_INT, &count);
+	int recv_buf[MSG_SIZE];
+	MPI_Recv(&recv_buf, MSG_SIZE, MPI_INT, status.MPI_SOURCE, MSG_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
-	//Msg would be an array of int <timestamp of msg> <next stop id => the LP to forward to> <the rest of the stops>
-	//TODO: FIX THIS or del??? cuz next stop gen'ed on the fly
-	int* number_buf = new int[count]; //(int*)malloc(sizeof(int) * count);
-	MPI_Recv(number_buf, count, MPI_INT, status.MPI_SOURCE, MSG_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	//Construct event obj and schedule on appropriate LP
+	Event e = new Event (recv_buf[TIMESTAMP], recv_buf[STOP_COUNT], recv_buf[HANDLER_ID], recv_buf[STOP_PASSED]);
 
-	//Construct event object & schedule it on appropriate LP
-//	Event* event = new Event(number_buf[0]);
-//	for (int i = 1; i < count; ++i)
-//		event->addStop(number_buf[i]);
-
-//	lpMap[number_buf[1]]->scheduleEvent(event);
-
-	delete [] number_buf;
-	//	free(number_buf);
-}
+	lpMap[recv_buf[HANDLER_ID]]->scheduleEvent(e);}
