@@ -57,7 +57,7 @@ int genNextStop(LPMap lpMap, int curStopId)
  * If local, simply schedule the event
  * Otherwise, send the msg to appropriate proc
  */
-void sendMsg(Event* event, LPMap lpMap, int nextStopId, int<int, pair<int, int>> &rankMap)
+void sendMsg(Event* event, LPMap &lpMap, int nextStopId, map<int, pair<int, int>> &rankMap)
 {
 	//If the LP is NOT on this proc
 	//Send the msg to other proc
@@ -76,7 +76,15 @@ void sendMsg(Event* event, LPMap lpMap, int nextStopId, int<int, pair<int, int>>
 
 		//2. Send the array
 		MPI_Request req;
-		MPI_Isend(data, size, MPI_INT, getRank(nextStopId), MSG_TAG, MPI_COMM_WORLD, &req);
+		int recvRank = 0;
+
+		//Determine the rank of the reciever
+		for (map<int, pair<int, int>>::const_iterator it = rankMap.begin(); it != rankMap.end(); ++it)
+		{
+
+		}
+
+		MPI_Isend(data, 3, MPI_INT, recvRank, MSG_TAG, MPI_COMM_WORLD, &req);
 
         //Save this to free later
 		outboxMsg.push_back(data);

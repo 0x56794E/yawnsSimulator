@@ -35,7 +35,7 @@ void LP::scheduleEvent(Event* event)
  * TODO: FIX THIS!!!!
  * Gen next stop on fly
  */
-void LP::handleEvent(Event* event, LPMap &lpMap, map<int, pair<int>> &rankMap)
+void LP::handleEvent(Event* event, LPMap &lpMap, map<int, pair<int, int>> &rankMap)
 {
 	totalEvent++;
 	event->handled(); //to inc num of stops passed
@@ -52,7 +52,6 @@ void LP::handleEvent(Event* event, LPMap &lpMap, map<int, pair<int>> &rankMap)
 		event->setTimestamp(event->getTimestamp() + LA);
 		sendMsg(event, lpMap, getRandNeiId(), rankMap);
 	}
-
 }
 
 int LP::getFELSize()

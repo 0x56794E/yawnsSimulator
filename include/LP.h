@@ -5,6 +5,7 @@
 #include <string> //for string
 #include <map>
 #include <vector> //for the neighbor set
+#include <utility> //for pair
 
 //own includes
 #include "Event.h"
