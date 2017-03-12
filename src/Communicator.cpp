@@ -1,9 +1,14 @@
-#include <vector>
-
 #include "Communicator.h"
 #include "TopologyUtils.h"
 
 using namespace std;
+
+//Keep outbox here to check occasionally
+vector<int*> outboxMsg;
+vector<MPI_Request> outboxStatus;
+
+int lastEpochCount = 0;
+int currentEpochCount = 0;
 
 /**
  * TODO: check if this works!!!!
@@ -81,7 +86,15 @@ void sendMsg(Event* event, LPMap &lpMap, int nextStopId, map<int, pair<int, int>
 		//Determine the rank of the reciever
 		for (map<int, pair<int, int>>::const_iterator it = rankMap.begin(); it != rankMap.end(); ++it)
 		{
+			//key: it->first
+			//value: it->second => pair of (min, max); eg mypair.first, mypair.second
+			pair<int, int> maxmin = it->second;
 
+			if (nextStopId >= maxmin.first && nextStopId <= maxmin.second)
+			{
+				recvRank = it->first;
+				break;
+			}
 		}
 
 		MPI_Isend(data, 3, MPI_INT, recvRank, MSG_TAG, MPI_COMM_WORLD, &req);
