@@ -31,10 +31,6 @@ SE::SE(int lpCount, int rank, int gridSize)
 	for (int i = 0; i < lpCount; ++i)
 		msgCount[i] = 0;
 
-	//load initial packets/msgs for ea LP here
-//	if (lpCount == 1)
-//		loadTrafficForGrid(INTENDED_P_COUNT, gridSize, lpMap);
-//	else
 	loadScalefreeTraffic(rank, lpCount, graph_file_name, lpMap);
 }
 

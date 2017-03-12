@@ -14,7 +14,8 @@ import java.util.stream.Stream;
  * (1) Number of processors to be used p
  * (2) TODO: interarrival time
  *
- * Output: p files each containing traffic for ea proc
+ * Output: p files each containing traffic for ea proc 
+ * (i.e., packets that originate from the local LPs on ea proc.)
  * Ea line has this format: <source LP ID> <start time> <stop count>
  * 
  * TODO: make interarrival time follow poisson

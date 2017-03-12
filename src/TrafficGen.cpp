@@ -124,10 +124,6 @@ void genTrafficForScalefree(string graphFileName, int p)
 		infile.close();
 
 	}
-
-
-
-
 }
 
 int main(int argc, char* argv[])

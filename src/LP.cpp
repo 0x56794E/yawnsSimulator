@@ -2,6 +2,8 @@
 #include "Communicator.h"
 
 #include <limits>
+#include <time.h> //for time() used to seed rangen
+#include <stdlib.h> //for rand(), srand()
 
 const int MAX_INT = std::numeric_limits<int>::max();
 const int LA = 10; 
@@ -10,6 +12,8 @@ LP::LP(int id)
 {
 	LP::id = id;
 	LP::totalEvent = 0;
+
+	srand(time(NULL));
 }
 
 int LP::getId()
@@ -72,5 +76,10 @@ Event* LP::nextEvent()
 
 void LP::addNeighbor(int neiId)
 {
-	neighbors.insert(neiId);
+	neighbors.push_back(neiId);
+}
+
+int LP::getRandNeiId()
+{
+	return neighbors.at(rand() % neighbors.size());
 }

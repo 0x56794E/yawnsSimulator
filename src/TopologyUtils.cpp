@@ -152,18 +152,3 @@ void doLoadNode()
 
 }
 
-/**
- *
- *   rem = n % p
-    counts = [] #number of links for ea proc
-    count = math.floor(n/p)
-
-    for i in range (p):
-        counts.append(count)
-
-    #Additionally, first "rem" proc has 1 more
-    for i in range (rem):
-        counts[i] = counts[i] + 1
- *
- */
-
