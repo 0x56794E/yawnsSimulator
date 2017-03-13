@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
 	srand(time(NULL) + rank);
 
 	//Create the exec
-	SE se(p, rank, "g1000_30");
+	SE se(p, rank, "g1000_5");
 //	printf("Rank %d one creating SE\n", rank);
 
 	//Start timer
