@@ -3,6 +3,8 @@
 
 using namespace std;
 
+//TODO: KEEP TRACK OF LOCAL AND INTER-PROC comm %
+
 //Keep outbox here to check occasionally
 vector<int*> outboxMsg;
 vector<MPI_Request> outboxStatus;
@@ -10,9 +12,9 @@ vector<MPI_Request> outboxStatus;
 int lastEpochCount = 0;
 int currentEpochCount = 0;
 
-/**
- * TODO: check if this works!!!!
- */
+int totalMsgCount = 0;
+int interProcCount = 0;
+
 void newEpoch()
 {
 	//clear the first lastEpochCount msg in the vector
@@ -64,6 +66,9 @@ int genNextStop(LPMap lpMap, int curStopId)
  */
 void sendMsg(Event* event, LPMap &lpMap, int nextStopId, map<int, pair<int, int>> &rankMap)
 {
+	//Incr the total msg count
+	++totalMsgCount;
+
 	//If the LP is NOT on this proc
 	//Send the msg to other proc
 	//Event has 3 main pc:
@@ -72,6 +77,9 @@ void sendMsg(Event* event, LPMap &lpMap, int nextStopId, map<int, pair<int, int>
 	// - stop_passed (already updated)
 	if (lpMap.find(nextStopId) == lpMap.end())
 	{
+		//Incr the inter-proc
+		++interProcCount;
+
 		//1. Turn the event into an array of int
 		//Following order: [timestamp, stop_count, stop_passed]
 		int* data = new int[MSG_SIZE](); //dynamic!! Delete it somewhere
@@ -113,11 +121,6 @@ void sendMsg(Event* event, LPMap &lpMap, int nextStopId, map<int, pair<int, int>
 	}
 }
 
-
-/**
- * FIX THIS!!! (mar 11, 17)
- * Receive the array of 3 ints!!!
- */
 void receiveMsg(MPI_Status status, LPMap lpMap)
 {
 	int recv_buf[MSG_SIZE];
@@ -127,4 +130,18 @@ void receiveMsg(MPI_Status status, LPMap lpMap)
 	Event* e = new Event (recv_buf[TIMESTAMP], recv_buf[STOP_COUNT], recv_buf[HANDLER_ID], recv_buf[STOP_PASSED]);
 
 	lpMap[recv_buf[HANDLER_ID]]->scheduleEvent(e);
+}
+
+/**
+ *  Determine how many of the total msg are inter-proc
+ */
+void summarizeMsgCount(int rank)
+{
+	//Print local stats
+	printf("\n\nRank %d: total=%d; interproc=%d; interproc-pct=%.5f\n",
+			rank, totalMsgCount, interProcCount, (interProcCount*100.0/totalMsgCount));
+
+	//Do reduce on total msg
+
+	//Do reduce on interproc
 }

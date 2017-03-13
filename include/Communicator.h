@@ -35,4 +35,6 @@ void receiveMsg(MPI_Status, LPMap lpMap);
 
 int done(MPI_Request req);
 
+void summarizeMsgCount(int rank);
+
 #endif

@@ -6,6 +6,7 @@
 
 //My stuff
 #include "SE.h"
+#include "Communicator.h"
 
 using namespace std::chrono;
 
@@ -30,7 +31,7 @@ int main(int argc, char* argv[])
 	srand(time(NULL) + rank);
 
 	//Create the exec
-	SE se(p, rank, "g2000_20");
+	SE se(p, rank, "g1000_10");
 //	printf("Rank %d one creating SE\n", rank);
 
 	//Start timer
@@ -46,6 +47,7 @@ int main(int argc, char* argv[])
     	time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count(); 
 	}
 
+	//Count total events/msgs
 	int l_total = se.getTotalProcessedEvent();
 	int gl_total;
 	MPI_Reduce(&l_total, &gl_total, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
@@ -53,6 +55,10 @@ int main(int argc, char* argv[])
 	if (rank == 0)
 		printf("\n\n***SUMMARY: Time = %.5f ms; EventCount = %d (local=%d); Concurrency ~= %.5f event/second\n",
 				time_ms, gl_total, l_total,  gl_total * 1000.0 / time_ms);
+
+	//Count total msg sent and percentage of interproc comm
+	summarizeMsgCount(rank);
+
 
 	MPI_Finalize();
 	return 0; //safe and sound
