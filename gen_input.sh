@@ -48,4 +48,8 @@ else
 
     javac -d . java/util/TrafficGenerator.java
     java TrafficGenerator "g$1_$2" $3 " "
+
+    #clean up
+    rm *.class
+    
 fi
