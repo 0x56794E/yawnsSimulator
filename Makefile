@@ -56,4 +56,4 @@ testCantor: $(OBJCANTOR)
 	$(CC) $(CFLAGS) -o $@ $(OBJCANTOR)
 		
 clean:
-	rm -f $(ODIR)/*.o  $(ODIR)/test/* *~ core $(IDIR)/*~ $(SDIR)/*~ $(IDIR)/*.gch tw testMisc testHeap collComm foo testPosMsg testAntiMsg trafficGen testConstructLPs bar sim test traffic testCantor
+	rm -f $(ODIR)/*.o  $(ODIR)/test/* *~ core $(IDIR)/*~ $(SDIR)/*~ $(IDIR)/*.gch tw testMisc testHeap collComm foo testPosMsg testAntiMsg trafficGen testConstructLPs bar sim test traffic testCantor *.class
