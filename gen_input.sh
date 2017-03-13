@@ -26,4 +26,19 @@ else
     link_count=$(cat "g$1_$2" | wc -l)
     python python/GenLinkPerProc.py "g$1_$2" " " $3 $link_count
 
+    #####
+    # (3) Generate neighbor files
+    # - Copy above files to where the .java file is
+    # - Compile the prog (just to be sure)
+    # - Run the prog
+    #
+    # Java prog needs: 
+    #####
+    g_file="g$1_$2"
+    
+    for f in "g$1_$2"*; do
+        echo "Copying $f"
+        cp "$f" java/util/$f
+    done
+
 fi
