@@ -138,7 +138,7 @@ void receiveMsg(MPI_Status status, LPMap lpMap)
 void summarizeMsgCount(int rank)
 {
 	//Print local stats
-	printf("\n\nRank %d: total=%d; interproc=%d; interproc-pct=%.5f\n",
+	printf("\n\nRank %d: total= %d ; interproc= %d ; interproc-pct=%.5f\n",
 			rank, totalMsgCount, interProcCount, (interProcCount*100.0/totalMsgCount));
 
 	//Do reduce on total msg

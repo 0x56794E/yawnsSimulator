@@ -154,7 +154,7 @@ int SE::getTotalProcessedEvent()
 		//printf("\tlp %d has %d; SUM = %d\n", it->first, it->second->getTotalProcessedEvent(), sum);
 		sum += it->second->getTotalProcessedEvent();
 	}
-	printf("Rank %d has %d\n", rank, sum);
+	//printf("Rank %d has %d\n", rank, sum);
 	return sum;
 }
 
