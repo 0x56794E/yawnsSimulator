@@ -8,3 +8,6 @@ obj/test/*.o
 sim
 testCantor
 java/util/*.class
+
+## emacs stuff
+*~

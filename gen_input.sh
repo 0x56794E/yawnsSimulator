@@ -28,17 +28,24 @@ else
 
     #####
     # (3) Generate neighbor files
-    # - Copy above files to where the .java file is
     # - Compile the prog (just to be sure)
     # - Run the prog
-    #
-    # Java prog needs: 
     #####
-    g_file="g$1_$2"
     
-    for f in "g$1_$2"*; do
-        echo "Copying $f"
-        cp "$f" java/util/$f
-    done
+    # No longer needed; keep for ref
+    # compile and spec output at root
+    #for f in "g$1_$2"*; do
+    #    echo "Copying $f"
+    #    cp "$f" java/util/$f
+    #done
 
+    javac -d . java/util/NeighborFinder.java
+    java NeighborFinder "g$1_$2" " "
+
+    ####
+    # (4) Generate Traffic
+    ####
+
+    javac -d . java/util/TrafficGenerator.java
+    java TrafficGenerator "g$1_$2" $3 " "
 fi
