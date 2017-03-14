@@ -15,22 +15,25 @@ using namespace std::chrono;
  * A network of p processors - fully connected
  * Ea proc when receive a msg, randomly select te next proc to send the package to.
  * Initially, ea proc has some x number of packets
+ *
+ * IMPORTANT: input - graph file name (at argv[1])
  */
 int main(int argc, char* argv[])
 {
 	//Init MPI
 	MPI_Init(&argc, &argv);
 	int rank, p;
-	
+
 	//Total procs and own rank
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 	MPI_Comm_size(MPI_COMM_WORLD, &p);
-	
+
+
 	//Set up ran
 	srand(time(NULL) + rank);
 
 	//Create the exec
-	SE se(p, rank, "g1000_5");
+	SE se(p, rank, argv[1]);
 
 	//Start timer
 	MPI_Barrier(MPI_COMM_WORLD);
