@@ -1,4 +1,5 @@
 #! /bin/bash
+
 # Script input: <node count> <min deg> <proc count>  <delim for graph file; opt>
 # Does the following things
 # (1) Generate graph file

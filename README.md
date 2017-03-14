@@ -1,5 +1,12 @@
 # C++ impl of YAWNS simulator.
+Usage:
+(1) Gen input: exec gen_input.sh
+(2) Run the sim: exec sim with files gen'ed from above
 
+e.g.,
+./gen_input.sh 1000 5 4 //Gen graph + traffic for 1000-node scale-free graph with min deg == 5 and the sim is to be run on 4 procs
+
+mpirun -np 4 ./sim g1000_5 //Run the sim (aka cross ur fingers and wait)
 
 # Notes on Graph Loader ##
 
