@@ -112,6 +112,9 @@ void sendMsg(Event* event, LPMap &lpMap, int nextStopId, map<int, pair<int, int>
 		outboxMsg.push_back(data);
 		outboxStatus.push_back(req);
 		++currentEpochCount;
+
+		//Free mem occupied by event; no longer needed
+		delete event;
 	}
 	else
 	{

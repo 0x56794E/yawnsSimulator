@@ -32,8 +32,7 @@ void LP::scheduleEvent(Event* event)
 }
 
 /**
- * TODO: FIX THIS!!!!
- * Gen next stop on fly
+ * Gen next stop on the fly
  */
 void LP::handleEvent(Event* event, LPMap &lpMap, map<int, pair<int, int>> &rankMap)
 {
@@ -44,6 +43,8 @@ void LP::handleEvent(Event* event, LPMap &lpMap, map<int, pair<int, int>> &rankM
 	if (event->getStopPassed() == event->getStopCount())
 	{
 		//TODO: what?
+		//Free the mem occupied by event
+		delete event;
 	}
 	//TODO: no need for if. Just 2b safe :D => will check
 	else if (event->getStopPassed() < event->getStopCount())
