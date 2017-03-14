@@ -140,11 +140,15 @@ void receiveMsg(MPI_Status status, LPMap lpMap)
  */
 void summarizeMsgCount(int rank)
 {
-	//Print local stats
-	printf("\n\nRank %d: total= %d ; interproc= %d ; interproc-pct=%.5f\n",
-			rank, totalMsgCount, interProcCount, (interProcCount*100.0/totalMsgCount));
-
 	//Do reduce on total msg
+	int gl_total;
+	MPI_Reduce(&totalMsgCount, &gl_total, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
 
 	//Do reduce on interproc
+	int gl_interp;
+	MPI_Reduce(&interProcCount, &gl_interp, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+
+	if (!rank)
+		printf("\nTotal msg sent = %d ; interproc = %d ; pct = %.5f\n",
+				gl_total, gl_interp, gl_interp * 100.0 / gl_total);
 }

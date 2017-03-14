@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
 	MPI_Reduce(&l_total, &gl_total, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
 
 	if (rank == 0)
-		printf("\n\n***SUMMARY: Time = %.5f ms; EventCount = %d (local=%d); Concurrency ~= %.5f event/second\n",
+		printf("\n***SUMMARY:\nTime = %.5f ms; EventCount = %d (local=%d); Concurrency ~= %.5f event/second\n",
 				time_ms, gl_total, l_total,  gl_total * 1000.0 / time_ms);
 
 	//Count total msg sent and percentage of interproc comm
