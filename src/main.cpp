@@ -20,6 +20,12 @@ using namespace std::chrono;
  */
 int main(int argc, char* argv[])
 {
+	if (argc < 2)
+	{
+		printf("Usage: mpirun -np <p> ./sim <graph_file_name>\n");
+		exit(1);
+	}
+
 	//Init MPI
 	MPI_Init(&argc, &argv);
 	int rank, p;
