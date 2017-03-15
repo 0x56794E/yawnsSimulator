@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# Script input: <node count> <min deg> <proc count>  <delim for graph file; opt>
+# Script input: <node count> <min deg> <proc count> <max pkg ct, opt> <max stop, opt>
 # Does the following things
 # (1) Generate graph file
 # (2) Generate files listing links for each proc
@@ -11,6 +11,7 @@
 # Missing args
 if [ $# -lt 3 ]
 then
+    echo "Len=$#"
     echo "Usage: ./gen_input.sh <node count> <min deg> <proc count> <opt, delim>"
 
     # Have required args
@@ -48,7 +49,14 @@ else
     ####
 
     javac -d . java/util/TrafficGenerator.java
-    java TrafficGenerator "g$1_$2" $3 " "
+
+    # If max pkg ct and max stop is spec
+    if [ $# -eq 5 ] 
+    then
+        java TrafficGenerator "g$1_$2" $3 " " $4 $5
+    else
+        java TrafficGenerator "g$1_$2" $3 " "
+    fi
 
     #clean up
     rm *.class

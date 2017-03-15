@@ -25,8 +25,8 @@ import java.util.stream.Stream;
 public class TrafficGenerator
 {
     //TODO: tentative for now
-    private static final int MAX_PACKET = 20;
-    private static final int MAX_STOP = 10;
+    private static int MAX_PACKET = 20;
+    private static int MAX_STOP = 10;
         
     public static void main(String[] args) throws IOException
     {
@@ -35,7 +35,14 @@ public class TrafficGenerator
             System.out.println("Usage: java TrafficGenerator <graphFileName> <procCount> <delim of file spec the edge list for ea proc>");
             System.exit(1);
         }
-                
+           
+        //If max packet and max stop are spec
+        if (args.length == 5)
+        {
+        	MAX_PACKET = Integer.parseInt(args[3]);
+        	MAX_STOP = Integer.parseInt(args[4]);
+        }
+        
         TrafficGenerator gen = new TrafficGenerator();
         gen.genTraffic(args[0], Integer.parseInt(args[1]), args[2]);
     }
