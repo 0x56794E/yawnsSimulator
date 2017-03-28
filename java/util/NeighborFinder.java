@@ -21,6 +21,10 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
 
+/**
+ * Find neighbors for link
+ * @author Vy Thuy Nguyen
+ */
 public class NeighborFinder
 {
     private final String fileName;
