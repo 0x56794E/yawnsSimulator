@@ -3,7 +3,7 @@
 # Usage: python GenLinkProc.py <graph_file_name> <delim> <proc_count> <link_count>
 #
 # Output format:
-# (1) File name: <graph_file_name>_<proc_count>_<proc the file is intended for>
+# (1) File name: link_<graph_file_name>_<proc_count>_<proc the file is intended for>
 # (2) Line format: <link ID><delim><Link data - as spec in given file>
 ####################
 
@@ -36,7 +36,7 @@ def genLinkIdFiles(file_name, delim, p, n):
     cur_id = -1
     cur_p = 0
     count = 0 #number of link printed so far
-    out_file_name = file_name + '_' + str(p) + '_'
+    out_file_name = 'link_' + file_name + '_' + str(p) + '_'
     out_file = open(out_file_name + str(cur_p), 'w')
     
     #Generate for ea proc

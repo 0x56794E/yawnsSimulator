@@ -70,7 +70,6 @@ public class TrafficGenerator
             System.out.printf("Writing for proc %d to file %s; line count: %d\n",
                               rank, outputFileName, lines.size());
             Files.write(Paths.get(outputFileName), lines);
-           
         }
     }
 

@@ -3,8 +3,8 @@
 # Script input: <node count> <min deg> <proc count> <max pkg ct, opt> <max stop, opt>
 # Does the following things
 # (1) Generate graph file
-# (2) Generate files listing links for each proc
-# (3) Generate files listing neighbors for ea link (java)
+# (2) Generate files listing LPs for each proc
+# (3) Generate files listing neighbors for ea LP (java)
 # (4) Generate traffic (java)
 
 
@@ -23,11 +23,17 @@ else
     python python/GenGraph.py $1 $2 > "g$1_$2"
 
     ######
-    # (2) Generate files listing links for ea proc
+    # (2) Generate files listing links and nodes for ea proc
     #####
+
+    # Gen for links
     link_count=$(cat "g$1_$2" | wc -l)
     python python/GenLinkPerProc.py "g$1_$2" " " $3 $link_count
 
+
+    # Gen for nodes
+    python python/GenNodePerProc.py "g$1_$2" $3 $1
+    
     #####
     # (3) Generate neighbor files
     # - Compile the prog (just to be sure)
@@ -41,9 +47,15 @@ else
     #    cp "$f" java/util/$f
     #done
 
+    # link stuff
     javac -d . java/util/NeighborFinder.java
     java NeighborFinder "g$1_$2" " "
 
+
+    # node stuff
+    javac -d . java/util/NodeNeighborFinder.java
+    java NodeNeighborFinder "g$1_$2" " "
+    
     ####
     # (4) Generate Traffic
     ####
