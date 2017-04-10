@@ -11,7 +11,7 @@ using namespace std;
 
 const int MAX_INT = std::numeric_limits<int>::max();
 const int INTENDED_P_COUNT = 4;
-
+const int LA = 10;
 
 /******************
  * PUBLIC members *
@@ -33,8 +33,36 @@ SE::SE(int lpCount, int rank, string graph_file_name)
 		msgCount[i] = 0;
 //	printf("Rank %d done init msg ct\n", rank);
 
-	loadScalefreeTraffic(rank, lpCount, graph_file_name, lpMap);
+	loadScalefreeTraffic(rank, lpCount, graph_file_name, this);
 //	printf("Rank %d done loading traffic\n", rank);
+}
+
+/**
+ * Gen next stop on the fly
+ */
+void SE::handleEvent(Event* event, LP* handler)
+{
+	handler->incEventCount();
+	event->handled(); //to inc num of stops passed
+
+	printf("LP %d has handled %d events so far\n",
+			handler->getId(), handler->getTotalProcessedEvent());
+	printf("Rank %d's rem eventCount = %d\n", fel.size());
+
+	//THIS is the last stop
+	if (event->getStopPassed() == event->getStopCount())
+	{
+		//TODO: what?
+		//Free the mem occupied by event
+		delete event;
+	}
+	//TODO: no need for if. Just 2b safe :D => will check
+	else if (event->getStopPassed() < event->getStopCount())
+	{
+		//Send msg to nextStop
+		event->setTimestamp(event->getTimestamp() + LA);
+		sendMsg(this, event, lpMap, handler->getRandNeiId(), rankMap);
+	}
 }
 
 /**
@@ -60,14 +88,21 @@ void SE::run()
 		//printf("\tRank %d, epoch %d: finish recv Msgs\n", rank, epoch);
 
 		//Handle all events w ts < lbts
-		for (LPMap::const_iterator it = lpMap.begin(); it != lpMap.end(); ++it)
+		//while there's still event
+		while (!this->done() && this->peekNextTimestamp() < global_lbts)
 		{
-			lp = it->second;
-			while (!lp->done() && lp->peekNextTimestamp() <= global_lbts)
-			{
-				lp->handleEvent(lp->nextEvent(), lpMap, rankMap);
-			}
+			Event* event = this->nextEvent();
+			this->handleEvent(event, lpMap[event->getCurrentStopId()]);
 		}
+
+//		for (LPMap::const_iterator it = lpMap.begin(); it != lpMap.end(); ++it)
+//		{
+//			lp = it->second;
+//			while (!lp->done() && lp->peekNextTimestamp() <= global_lbts)
+//			{
+//				lp->handleEvent(this, lp->nextEvent(), lpMap, rankMap);
+//			}
+//		}
 		//printf("\tRank %d, epoch %d: finish handling events\n", rank, epoch);
 
 		//Reset msgCount
@@ -93,22 +128,22 @@ void SE::run()
 /*******************
  * PRIVATE members *
  *******************/
+Event* SE::nextEvent()
+{
+	Event* event = fel.top();
+	fel.pop();
+	return event;
+}
+
 int SE::compLBTS()
 {
-	int local_lbts = MAX_INT, global_lbts;
-
-	//Locally determine LBTS accross LPs
-	for (LPMap::const_iterator it = lpMap.begin(); it != lpMap.end(); ++it)
-	{
-		if (it->second->peekNextTimestamp() < local_lbts)
-		{
-			local_lbts = it->second->peekNextTimestamp();
-		}	
-	}
+	int local_lbts = this->peekNextTimestamp();
+	int global_lbts;
 
 	//Globally determine LBTS
 	MPI_Allreduce(&local_lbts, &global_lbts, 1, MPI_INT, MPI_MIN, MPI_COMM_WORLD);
-	//printf("lbts = %d\n", global_lbts);
+	printf("rank=%d, local=%d, global=%d\n",
+			rank, local_lbts, global_lbts);
 
 	return global_lbts;	
 }
@@ -129,7 +164,7 @@ void SE::receiveMsgs()
 		{
 			//receiv msg here
 			//Msg would be an array of ints (see receiveMsg for more detail)
-			receiveMsg(status, lpMap);
+			receiveMsg(status, this);
 		}
 
 		//else, keep checking
@@ -139,12 +174,13 @@ void SE::receiveMsgs()
 
 int SE::done()
 {
-	int done = 1;	
-	for (LPMap::const_iterator it = lpMap.begin(); it != lpMap.end(); ++it)
-	{
-		done = done && it->second->done();
-	}
-	return done;
+	return fel.empty();
+//	int done = 1;
+//	for (LPMap::const_iterator it = lpMap.begin(); it != lpMap.end(); ++it)
+//	{
+//		done = done && it->second->done();
+//	}
+//	return done;
 }
 
 int SE::getTotalProcessedEvent()
@@ -159,3 +195,15 @@ int SE::getTotalProcessedEvent()
 	return sum;
 }
 
+void SE::scheduleEvent(Event* event)
+{
+	fel.push(event);
+}
+
+int SE::peekNextTimestamp()
+{
+	if (fel.empty())
+		return MAX_INT;
+	else
+		return fel.top()->getTimestamp();
+}

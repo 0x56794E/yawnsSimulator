@@ -30,6 +30,11 @@ int Event::getCurrentStopId()
 	return lpId;
 }
 
+void Event::setCurrentStopId(int id)
+{
+	lpId = id;
+}
+
 void Event::handled()
 {
 	stop_passed++;

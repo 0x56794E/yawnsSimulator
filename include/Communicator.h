@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "LP.h"
+#include "SE.h"
 
 //Tag for "regular" msgs
 const int MSG_TAG = 0;
@@ -26,12 +27,12 @@ const int HANDLER_ID = 3;
 
 void newEpoch();
 
-void sendMsg(Event* event, LPMap &lpMap, int nextStopId, map<int, pair<int, int>> &rankMap);
+void sendMsg(SE* se, Event* event, LPMap &lpMap, int nextStopId, map<int, pair<int, int>> &rankMap);
 
 /**
  * Receive msg and schedule it on appropriate LP
  */
-void receiveMsg(MPI_Status, LPMap lpMap);
+void receiveMsg(MPI_Status, SE* se);
 
 int done(MPI_Request req);
 

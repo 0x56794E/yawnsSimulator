@@ -4,11 +4,11 @@
 #include <map>
 
 //own files
-#include "LP.h"
+#include "SE.h"
 #include "EventComparator.h"
 
 using namespace std;
 
-void loadScalefreeTraffic(int rank, int p, string graph_file_name, LPMap &lp_map); //Used for mult-proc, scalefree graph
+void loadScalefreeTraffic(int rank, int p, string graph_file_name, SE* se); //Used for mult-proc, scalefree graph
 
 #endif

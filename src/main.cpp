@@ -40,10 +40,12 @@ int main(int argc, char* argv[])
 
 	//Create the exec
 	SE se(p, rank, argv[1]);
+	//printf("Rank %d finished setting up\n", rank);
 
 	//Start timer
 	MPI_Barrier(MPI_COMM_WORLD);
 	auto begin = std::chrono::high_resolution_clock::now();
+	printf("Rank %d start running\n", rank);
 	se.run();
 
 	MPI_Barrier(MPI_COMM_WORLD);

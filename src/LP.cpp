@@ -6,7 +6,6 @@
 #include <stdlib.h> //for rand(), srand()
 
 const int MAX_INT = std::numeric_limits<int>::max();
-const int LA = 10; 
 
 LP::LP(int id)
 {
@@ -26,59 +25,40 @@ int LP::getTotalProcessedEvent()
 	return totalEvent;
 }
 
-void LP::scheduleEvent(Event* event)
+//void LP::scheduleEvent(Event* event)
+//{
+//	fel.push(event);
+//}
+
+void LP::incEventCount()
 {
-	fel.push(event);
+	++totalEvent;
 }
 
-/**
- * Gen next stop on the fly
- */
-void LP::handleEvent(Event* event, LPMap &lpMap, map<int, pair<int, int>> &rankMap)
-{
-	totalEvent++;
-	event->handled(); //to inc num of stops passed
+//int LP::getFELSize()
+//{
+//	return fel.size();
+//}
 
-	//THIS is the last stop
-	if (event->getStopPassed() == event->getStopCount())
-	{
-		//TODO: what?
-		//Free the mem occupied by event
-		delete event;
-	}
-	//TODO: no need for if. Just 2b safe :D => will check
-	else if (event->getStopPassed() < event->getStopCount())
-	{
-		//Send msg to nextStop
-		event->setTimestamp(event->getTimestamp() + LA);
-		sendMsg(event, lpMap, getRandNeiId(), rankMap);
-	}
-}
+//int LP::done()
+//{
+//	return fel.empty();
+//}
 
-int LP::getFELSize()
-{
-	return fel.size();
-}
+//int LP::peekNextTimestamp()
+//{
+//	if (fel.empty())
+//		return MAX_INT;
+//	else
+//		return fel.top()->getTimestamp();
+//}
 
-int LP::done()
-{
-	return fel.empty();
-}
-
-int LP::peekNextTimestamp()
-{
-	if (fel.empty())
-		return MAX_INT;
-	else
-		return fel.top()->getTimestamp();	
-}
-
-Event* LP::nextEvent()
-{
-	Event* event = fel.top();
-	fel.pop();
-	return event;
-}
+//Event* LP::nextEvent()
+//{
+//	Event* event = fel.top();
+//	fel.pop();
+//	return event;
+//}
 
 void LP::addNeighbor(int neiId)
 {

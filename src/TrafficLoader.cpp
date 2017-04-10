@@ -25,7 +25,7 @@ using namespace std;
  * the packets that originate from the local LP.
  * The file contains ONLY traffic originate from local LPs
  */
-void loadScalefreeTraffic(int rank, int p, string graph_file_name, LPMap &lp_map)
+void loadScalefreeTraffic(int rank, int p, string graph_file_name, SE* se)
 {
 	//file name format: <graph_file_name>_traffic_p_rank
 	string file_name = graph_file_name + "_traffic_" + to_string(p) + "_" + to_string(rank);
@@ -50,7 +50,8 @@ void loadScalefreeTraffic(int rank, int p, string graph_file_name, LPMap &lp_map
 			Event* event = new Event(startTime, stopCount, startLP, 1);
 
 			//schedule event on appropriate LP
-			lp_map[startLP]->scheduleEvent(event);
+			se->scheduleEvent(event);
+			//lp_map[startLP]->scheduleEvent(event);
 			++eCount;
 		}
 

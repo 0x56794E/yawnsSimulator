@@ -1,6 +1,7 @@
 #ifndef SE_H
 #define SE_H
 
+#include <queue> //For priority queue
 #include <map>
 #include <string>
 
@@ -8,6 +9,7 @@
 #include "LP.h"
 
 using namespace std;
+
 
 /**
  * Manage the LPs on this proc
@@ -30,10 +32,17 @@ class SE
 	void receiveMsgs();
 	int done(); //true if all LPs on this proc are done
 
+	//One FEL for all LPs on this proc
+	std::priority_queue<Event*, std::vector<Event*>, EventComparator> fel;
+	Event* nextEvent();
+	void handleEvent(Event*, LP*);
+
   public:
   	SE(int lpCount, int rank, string graph_file_name);
   	void run(); //start event processing
 	int getTotalProcessedEvent(); //total number of events processed by all LPs on this SE
+	void scheduleEvent(Event*);
+	int peekNextTimestamp(); //If queue is empty, return MAX_INT
 };
 
 #endif
