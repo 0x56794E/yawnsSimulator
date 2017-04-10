@@ -45,9 +45,9 @@ void SE::handleEvent(Event* event, LP* handler)
 	handler->incEventCount();
 	event->handled(); //to inc num of stops passed
 
-	printf("LP %d has handled %d events so far\n",
-			handler->getId(), handler->getTotalProcessedEvent());
-	printf("Rank %d's rem eventCount = %d\n", fel.size());
+//	printf("LP %d has handled %d events so far\n",
+//			handler->getId(), handler->getTotalProcessedEvent());
+//	printf("Rank %d's rem eventCount = %d\n", fel.size());
 
 	//THIS is the last stop
 	if (event->getStopPassed() == event->getStopCount())
@@ -142,8 +142,8 @@ int SE::compLBTS()
 
 	//Globally determine LBTS
 	MPI_Allreduce(&local_lbts, &global_lbts, 1, MPI_INT, MPI_MIN, MPI_COMM_WORLD);
-	printf("rank=%d, local=%d, global=%d\n",
-			rank, local_lbts, global_lbts);
+//	printf("rank=%d, local=%d, global=%d\n",
+//			rank, local_lbts, global_lbts);
 
 	return global_lbts;	
 }
