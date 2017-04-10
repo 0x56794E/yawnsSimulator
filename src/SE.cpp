@@ -89,7 +89,7 @@ void SE::run()
 
 		//Handle all events w ts < lbts
 		//while there's still event
-		while (!this->done() && this->peekNextTimestamp() < global_lbts)
+		while (!this->done() && this->peekNextTimestamp() <= global_lbts)
 		{
 			Event* event = this->nextEvent();
 			this->handleEvent(event, lpMap[event->getCurrentStopId()]);
