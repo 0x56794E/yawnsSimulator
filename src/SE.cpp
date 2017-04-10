@@ -12,6 +12,7 @@ using namespace std;
 const int MAX_INT = std::numeric_limits<int>::max();
 const int INTENDED_P_COUNT = 4;
 
+
 /******************
  * PUBLIC members *
  ******************/
