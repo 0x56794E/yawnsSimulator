@@ -78,7 +78,7 @@ void loadScalefreeLP(MODEL_TYPE type, int rank, int p, string fileName, LPMap &l
 //INDEPENDENT of the number of procs being used!!!
 string getNeighborFileName(int lpId, string graphFileName)
 {
-	string ret = graphFileName + "_link_nei/" + to_string(static_cast<long long>(lpId)) + ".txt";
+	string ret = graphFileName + "_link_nei/" + to_string(lpId) + ".txt";
 	return ret;
 }
 
@@ -114,10 +114,9 @@ void doLoadLink(int rank, int p, string fileName, LPMap &lpMap, map<int, pair<in
 	//(1) eac proc reads from its own graph file
 	//1a. Construct LPMap for the proc
 	//1b. Load the set of neighbors for ea LP
-	//Stupid static_cast<long long> cast to work on jinx
 	string per_proc_file_name = fileName + "_"
-			+ to_string(static_cast<long long>(p)) + "_"
-			+ to_string(static_cast<long long>(rank));
+			+ to_string(p) + "_"
+			+ to_string(rank);
 	ifstream inFile (per_proc_file_name);
 
 	vector<int> linkIds;
