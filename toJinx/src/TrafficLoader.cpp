@@ -28,7 +28,7 @@ using namespace std;
 void loadScalefreeTraffic(int rank, int p, string graph_file_name, SE* se)
 {
 	//file name format: <graph_file_name>_traffic_p_rank
-	string file_name = graph_file_name + "_traffic_" + to_string(p) + "_" + to_string(rank);
+	string file_name = graph_file_name + "_traffic_" + to_string(static_cast<long long>(p)) + "_" + to_string(static_cast<long long>(rank));
 	ifstream infile (file_name);
 
 	if (infile.is_open())

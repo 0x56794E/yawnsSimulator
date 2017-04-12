@@ -46,9 +46,6 @@ sim: $(OBJ)
 traffic: $(TRAFF_OBJ)
 	$(CC) $(CFLAGS) -o $@ $(TRAFF_OBJ)
 
-trafficGen: $(ODIR)/TrafficGen.o
-	$(CC) $(CFLAGS) -o $@ $(ODIR)/TrafficGen.o
-
 test: $(OBJT)
 	$(CC) $(CFLAGS) -o $@ $(OBJT)
 	
@@ -56,4 +53,4 @@ testCantor: $(OBJCANTOR)
 	$(CC) $(CFLAGS) -o $@ $(OBJCANTOR)
 		
 clean:
-	rm -f $(ODIR)/*.o  $(ODIR)/test/* *~ core $(IDIR)/*~ $(SDIR)/*~ $(IDIR)/*.gch tw testMisc testHeap collComm foo testPosMsg testAntiMsg trafficGen testConstructLPs bar sim test traffic testCantor *.class
+	rm -f $(ODIR)/*.o  $(ODIR)/test/* *~ core $(IDIR)/*~ $(SDIR)/*~ $(IDIR)/*.gch tw testMisc testHeap collComm foo testPosMsg testAntiMsg testConstructLPs bar sim test traffic testCantor *.class
