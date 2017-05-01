@@ -85,7 +85,7 @@ string getNeighborFileName(int lpId, string graphFileName)
 	return ret;
 }
 
-void loadNeighbors(LinkLP* lp, string graph_file_name)
+void loadLinkNeighbors(LinkLP* lp, string graph_file_name)
 {
 	string nei_file = getNeighborFileName(lp->getId(), graph_file_name);
 	ifstream inFile (nei_file);
@@ -136,7 +136,7 @@ void doLoadLink(int rank, int p, string fileName, LinkLPMap &lpMap, map<int, pai
 			linkIds.push_back(linkId);
 
 			//Load neighbors for ea link
-			loadNeighbors(lpMap[linkId], fileName);
+			loadLinkNeighbors(lpMap[linkId], fileName);
 		}
 		inFile.close();
 	}
@@ -159,6 +159,29 @@ void doLoadLink(int rank, int p, string fileName, LinkLPMap &lpMap, map<int, pai
 		min = max + 1;
 		max = min + g_sizes[i] - 1;
 		rankMap[i] = pair<int,int>(min, max);
+	}
+}
+
+void loadNodeNeighbors(NodeLP* lp, string graphFileName)
+{
+	int lpId = lp->getId();
+	string nei_file = graphFileName + "_node_nei/" + to_string(static_cast<long long>(lpId)) + ".txt";
+	ifstream inFile (nei_file);
+	int neiId, sharedNodeId;
+
+	if (inFile.is_open())
+	{
+		while (inFile >> neiId >> sharedNodeId)
+		{
+			lp->addNeighbor(neiId, sharedNodeId);
+		}
+
+		inFile.close();
+	}
+	else
+	{
+		cout << "ERROR: cannot open file: " << nei_file << endl;
+		exit(1);
 	}
 }
 

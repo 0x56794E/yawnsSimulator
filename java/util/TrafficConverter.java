@@ -6,9 +6,13 @@ import java.io.IOException;
 import java.util.stream.Stream;
 import java.util.*;
 
-public class TrafficLoader
+/**
+ * Split the traffic file into
+ * (0) File for diff procs
+ * (1) Diff btw link and node models
+ */
+public class TrafficConverter
 {
-
 	//VERY hacky but desperate times...
 	private static class Counter
 	{

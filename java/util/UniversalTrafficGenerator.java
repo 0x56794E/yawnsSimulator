@@ -35,19 +35,6 @@ public class UniversalTrafficGenerator
 	}
 
 	/**
-	 * What do I need:
-	 */ 
-	private static void toLinkModelFormat()
-	{
-
-	}	
-
-	private static void toNodeModelFormat()
-	{
-
-	}
-
-	/**
 	 * REQ: the traffic map has already been loaded
 	 * Gen traffic for ALL node
 	 */
