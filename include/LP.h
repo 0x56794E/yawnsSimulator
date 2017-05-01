@@ -17,18 +17,38 @@ class LP; //forward decl
 typedef map<int, LP*> LPMap; //key: LP's id; value: LP
 
 class LP
-{
-	int id;
-	int totalEvent; //Total event processed
-	vector<int> neighbors; //Set of IDs of the neighbor of this LP
-	
+{	
   public:
-  	LP(int id);
-  	int getId();
-  	void addNeighbor(int); //Add a nei's ID
-	int getRandNeiId();
+	int getId(); 
   	int getTotalProcessedEvent();
   	void incEventCount();
+
+ protected:
+	LP(int id);
+	int id;
+	int totalEvent; //Total event processed
 };
 
+class LinkLP : public LP
+{
+	int node1Id;
+	int node2Id;
+	vector<int> node1Links; //IDs of all links touching node1
+	vector<int> node2Links; //IDs of all links touching node2
+
+ public:
+	LinkLP(int id, int node1Id, int node2Id);
+	void addNeighbor(int neiId, int nodeId);
+	int getRandNextStopId(int lastNodeId);
+}
+
+class NodeLP : public LP
+{
+	vector<int> neighbors;
+
+ public:
+	NodeLP(int id);
+	void addNeighbor(int neiId);
+	int getRandNextStopId(int lastNodeId);
+}
 #endif
