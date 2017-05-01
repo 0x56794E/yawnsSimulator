@@ -25,40 +25,10 @@ int LP::getTotalProcessedEvent()
 	return totalEvent;
 }
 
-//void LP::scheduleEvent(Event* event)
-//{
-//	fel.push(event);
-//}
-
 void LP::incEventCount()
 {
 	++totalEvent;
 }
-
-//int LP::getFELSize()
-//{
-//	return fel.size();
-//}
-
-//int LP::done()
-//{
-//	return fel.empty();
-//}
-
-//int LP::peekNextTimestamp()
-//{
-//	if (fel.empty())
-//		return MAX_INT;
-//	else
-//		return fel.top()->getTimestamp();
-//}
-
-//Event* LP::nextEvent()
-//{
-//	Event* event = fel.top();
-//	fel.pop();
-//	return event;
-//}
 
 void LP::addNeighbor(int neiId)
 {

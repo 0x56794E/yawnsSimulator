@@ -33,7 +33,20 @@ public class UniversalTrafficGenerator
 		loadNeiMap("g1000_5_node_nei"); 
 		genTraffic();
 	}
-	
+
+	/**
+	 * What do I need:
+	 */ 
+	private static void toLinkModelFormat()
+	{
+
+	}	
+
+	private static void toNodeModelFormat()
+	{
+
+	}
+
 	/**
 	 * REQ: the traffic map has already been loaded
 	 * Gen traffic for ALL node
@@ -68,7 +81,6 @@ public class UniversalTrafficGenerator
 			//Spec the file to write to
 			final List<String> lines = new ArrayList<String>();
 			
-
 			//For ea node gen some x number of packets
 			// with some interarrival times
 			// <src = nodeId> <next stop == vary> <arrival time> <stop count>
