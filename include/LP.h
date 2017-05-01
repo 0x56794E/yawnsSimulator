@@ -13,8 +13,14 @@
 
 using namespace std;
 
-class LP; //forward decl
+//Forward decls
+class LP; 
+class LinkLP;
+class NodeLP;
+
 typedef map<int, LP*> LPMap; //key: LP's id; value: LP
+typedef map<int, LinkLP*> LinkLPMap; //key: LP's id; value: NodeLP
+typedef map<int, NodeLP*> NodeLPMap; //key: LP's id; value: LinkLP
 
 class LP
 {	
@@ -23,7 +29,7 @@ class LP
   	int getTotalProcessedEvent();
   	void incEventCount();
 
- protected:
+  protected:
 	LP(int id);
 	int id;
 	int totalEvent; //Total event processed
@@ -38,7 +44,7 @@ class LinkLP : public LP
 
  public:
 	LinkLP(int id, int node1Id, int node2Id);
-	void addNeighbor(int neiId, int nodeId);
+	void addNeighbor(int neiId, int sharedNodeId);
 	int getRandNextStopId(int lastNodeId);
 }
 

@@ -26,6 +26,7 @@
 #include "TopologyUtils.h"
 
 /**
+ * IS THIS USED????
  * IDEALLY, this should be called ONCE at the beginning.
  * Keep a map or sth
  * @param: id of lp rep link
@@ -33,6 +34,7 @@
  * @param: total number of procs
  * @return rank the link (lp) is on
  */
+/*
 int getLinkRank(int lpId, int n, int p)
 {
 	int rem = n % p;
@@ -47,6 +49,7 @@ int getLinkRank(int lpId, int n, int p)
 		counts[i] += 1;
 
 }
+*/
 
 /**
  * Load scale-free topology
@@ -82,17 +85,17 @@ string getNeighborFileName(int lpId, string graphFileName)
 	return ret;
 }
 
-void loadNeighbors(LP* lp, string graph_file_name)
+void loadNeighbors(LinkLP* lp, string graph_file_name)
 {
 	string nei_file = getNeighborFileName(lp->getId(), graph_file_name);
 	ifstream inFile (nei_file);
-	int neiId;
+	int neiId, sharedNodeId;
 
 	if (inFile.is_open())
 	{
-		while (inFile >> neiId)
+		while (inFile >> neiId >> sharedNodeId)
 		{
-			lp->addNeighbor(neiId);
+			lp->addNeighbor(neiId, sharedNodeId);
 		}
 
 		inFile.close();
@@ -109,13 +112,13 @@ void loadNeighbors(LP* lp, string graph_file_name)
  * fileName: name of the graph file
  * 1a => file containing LPs for proc rank: fileName_p_rank
  */
-void doLoadLink(int rank, int p, string fileName, LPMap &lpMap, map<int, pair<int, int>> &rankMap)
+void doLoadLink(int rank, int p, string fileName, LinkLPMap &lpMap, map<int, pair<int, int>> &rankMap)
 {
 	//(1) eac proc reads from its own graph file
 	//1a. Construct LPMap for the proc
 	//1b. Load the set of neighbors for ea LP
 	//Stupid static_cast<long long> cast to work on jinx
-	string per_proc_file_name = fileName + "_"
+	string per_proc_file_name = "link_" + fileName + "_"
 			+ to_string(static_cast<long long>(p)) + "_"
 			+ to_string(static_cast<long long>(rank));
 	ifstream inFile (per_proc_file_name);
@@ -129,7 +132,7 @@ void doLoadLink(int rank, int p, string fileName, LPMap &lpMap, map<int, pair<in
 		while (inFile >> linkId >> srcId >> dstId)
 		{
 			//Construct LP
-			lpMap[linkId] = new LP(linkId);
+			lpMap[linkId] = new LinkLP(linkId, srcId, dstId);
 			linkIds.push_back(linkId);
 
 			//Load neighbors for ea link
@@ -159,8 +162,53 @@ void doLoadLink(int rank, int p, string fileName, LPMap &lpMap, map<int, pair<in
 	}
 }
 
-void doLoadNode()
+void doLoadNode(int rank, int p, string fileName, NodeLPMap &lpMap, map<int, pair<int, int>> &rankMap)
 {
+	//(1) eac proc reads from its own graph file
+	//1a. Construct LPMap for the proc
+	//1b. Load the set of neighbors for ea LP
+	//Stupid static_cast<long long> cast to work on jinx
+	string per_proc_file_name = "node_" + fileName + "_"
+			+ to_string(static_cast<long long>(p)) + "_"
+			+ to_string(static_cast<long long>(rank));
+	ifstream inFile (per_proc_file_name);
 
+	vector<int> nodeIds;
+
+	//Each line: <nodeId>
+	int nodeId;
+	if (inFile.is_open())
+	{
+		while (inFile >> nodeId)
+		{
+			//Construct LP
+			lpMap[nodeId] = new NodeLP(nodeId);
+			nodeIds.push_back(nodeId);
+
+			//Load neighbors for ea link
+			loadNodeNeighbors(lpMap[nodeId], fileName);
+		}
+		inFile.close();
+	}
+	else
+	{
+		cout << "Unable to open file " << per_proc_file_name << endl;
+		exit (3);
+	}
+
+	//(2) Load the rank map so all procs know which LP on which proc?
+	//Do all gather on the size
+	int l_size = linkIds.size(); //local
+	int g_sizes[p]; //global
+	int min, max = -1;
+	MPI_Allgather(&l_size, 1, MPI_INT, &g_sizes, 1, MPI_INT, MPI_COMM_WORLD);
+
+	//Load the rank map
+	for (int i = 0; i < p; ++i)
+	{
+		min = max + 1;
+		max = min + g_sizes[i] - 1;
+		rankMap[i] = pair<int,int>(min, max);
+	}
 }
 

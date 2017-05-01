@@ -41,9 +41,9 @@ LinkLP::LinkLP(int id, int node1Id, int node2Id) : LP(id)
 	LinkLP::node2Id = node2Id;
 }
 
-void LinkLP::addNeighbor(int neiId, int nodeId)
+void LinkLP::addNeighbor(int neiId, int sharedNodeId)
 {
-	if (nodeId == node1Id)
+	if (sharedNodeId == node1Id)
 		node1Links.push_back(neiId);
 	else
 		node2Links.push_back(neiId);

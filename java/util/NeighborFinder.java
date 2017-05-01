@@ -1,6 +1,6 @@
 /**
  * Helper for generating files containing IDs of neighbors 
- * of all links in a given graph.
+ * of all LINKS in a given graph.
  * 
  * Input: edge list file
  * ASSUMPTION: link id is the order it appears in the edge list file
@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 /**
- * Find neighbors for link
+ * Find neighbors for links
  * @author Vy Thuy Nguyen
  */
 public class NeighborFinder
@@ -147,7 +147,11 @@ public class NeighborFinder
 
         public void addNei(Link nei)
         {
-            neis.add(String.valueOf(nei.linkId));
+			//Write the common node
+			String sharedNode = nei.srcId == this.srcId 
+									? this.srcId 
+									: this.dstId;
+			neis.add(String.format("%d %s", nei.linkId, sharedNode));
         }
 
         public Set<String> getNeiIDs()

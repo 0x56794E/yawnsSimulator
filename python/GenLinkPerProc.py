@@ -65,18 +65,7 @@ def genLinkIdFiles(file_name, delim, p, n):
             count = count + 1
             
     pass
-    
 
-def writeToFile(data, output_file):
-    # write data to output_file
-    # rtype: None
-
-    f = open(output_file, 'w')
-    for line in data:
-        f.write(line[0] + ',' + line[1] + '\n')
-
-    f.close()        
-    pass
     
 if __name__ == '__main__':
     if len(sys.argv) != 5:
