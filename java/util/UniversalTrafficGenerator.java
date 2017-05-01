@@ -2,6 +2,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.stream.Stream;
 
 /**
@@ -10,19 +14,24 @@ import java.util.stream.Stream;
  * Line output: <first stop's node id> <second stop's node id> <arrival time> <stop/hops count>
  *
  * Generate traffic for all links/nodes on all procs 
- *
+ * 
+ * IMPORTANT: STRICT CONTRACT!!
+ * input: dir containing files spec neighbors of ea node where the files' name is the node ID.
  * @author: Vy Thuy Nguyen
  */
 public class UniversalTrafficGenerator
 {
+	
+	private static final Map<String, List<String>> nodeMap = new HashMap<>();
+
 	public static void main(String[] args)
 		throws IOException
 	{	
-		doGen("g1000_5_node_nei/"); 
+		loadNeiMap("g1000_5_node_nei"); 
 	}
 	
 
-	private static void doGen(String dirName)
+	private static void loadNeiMap(String dirName)
 		throws IOException
 	{
 		Path dirPath = Paths.get(dirName);
@@ -34,16 +43,18 @@ public class UniversalTrafficGenerator
 			{
 				try
 				{
-
+					//Filename is the node's ID
+					final String nodeId = file.getFileName().toString().split("\\.")[0];
+					nodeMap.put(nodeId, new ArrayList<String>());
 					Stream<String> lines = 	Files.lines(file);
 					lines.forEach(line -> 
 					{
-						System.out.println(line);
+						nodeMap.get(nodeId).add(line);
 					});
 				}
-				catch (IOException ioe)
+				catch (Exception exc)
 				{
-					System.out.printf("IOE for file %s\n", file);
+					System.out.printf("Unexpected prob for file %s\n", file);
 				}
 			}
 		});
