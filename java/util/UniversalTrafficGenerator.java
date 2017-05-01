@@ -16,29 +16,37 @@ import java.util.stream.Stream;
 public class UniversalTrafficGenerator
 {
 	public static void main(String[] args)
+		throws IOException
 	{	
-	
+		doGen("g1000_5_node_nei/"); 
 	}
 	
 
 	private static void doGen(String dirName)
 		throws IOException
 	{
-		//Load each node's neighbors
-		try (Stream<Path> paths = Files.walk(Paths.get(dirName)))
+		Path dirPath = Paths.get(dirName);
+		Stream<Path> files = Files.walk(dirPath);
+
+		files.forEach(file -> 
 		{
-			paths.forEach(filePath -> {
-				if (Files.isRegularFile(filePath))
+			if (!Files.isDirectory(file))
+			{
+				try
 				{
-					filePath.forEach(line -> {
+
+					Stream<String> lines = 	Files.lines(file);
+					lines.forEach(line -> 
+					{
 						System.out.println(line);
 					});
-				}		
-
-				System.out.println("DONE WITH ONE FILE");
-				System.exit(1);	
-			});
-		}
+				}
+				catch (IOException ioe)
+				{
+					System.out.printf("IOE for file %s\n", file);
+				}
+			}
+		});
 	}
 	
 }
