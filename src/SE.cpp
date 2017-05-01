@@ -95,16 +95,6 @@ void SE::run()
 			this->handleEvent(event, lpMap[event->getCurrentStopId()]);
 		}
 
-//		for (LPMap::const_iterator it = lpMap.begin(); it != lpMap.end(); ++it)
-//		{
-//			lp = it->second;
-//			while (!lp->done() && lp->peekNextTimestamp() <= global_lbts)
-//			{
-//				lp->handleEvent(this, lp->nextEvent(), lpMap, rankMap);
-//			}
-//		}
-		//printf("\tRank %d, epoch %d: finish handling events\n", rank, epoch);
-
 		//Reset msgCount
 		for (int i = 0; i < p; ++i)
 			msgCount[i] = 0;
@@ -118,7 +108,7 @@ void SE::run()
 		MPI_Allreduce(&local_done, &global_done, 1, MPI_INT, MPI_LAND, MPI_COMM_WORLD);
 	}
 
-//	//clean up
+	//clean up
 	delete[] msgCount;
 }
 
