@@ -3,6 +3,7 @@
 # load MPI module and compile
 module load openmpi-x86_64
 
+#loop thru nodes
 pbsnodes | grep -B 1 "state = free" | grep jinx | while read nodename; do
     echo "#!/bin/sh" > myscript.sh
     echo "#PBS -q class" >> myscript.sh
