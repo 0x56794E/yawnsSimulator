@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.stream.Stream;
+import java.util.Map.Entry;
+import java.nio.file.StandardOpenOption;
+import java.util.Random;
 
 /**
  * Given a graph topo file => generate traffic
@@ -28,8 +31,72 @@ public class UniversalTrafficGenerator
 		throws IOException
 	{	
 		loadNeiMap("g1000_5_node_nei"); 
+		genTraffic();
 	}
 	
+	/**
+	 * REQ: the traffic map has already been loaded
+	 * Gen traffic for ALL node
+	 */
+	private static void genTraffic()
+		throws IOException
+	{
+		int maxPacket = 100;
+		int maxStop = 10; //Number of nodes the packet goes thru => incls both ends.
+
+		//Output file name
+		String outputFileName = "testout.txt";
+		Path outFile = Paths.get(outputFileName);
+		//TODO: use one rand gen for now
+		//FIX THIS!!
+		Random rand = new Random();
+
+		int packetCount; 
+		int stopCount;		
+		int neiIdx;
+		int neiCt;
+		int arrTime;
+		String nodeId;
+		List<String> neis;
+
+		for (Entry<String, List<String>> entry : nodeMap.entrySet())
+		{
+			nodeId = entry.getKey();
+			neis = entry.getValue();
+			neiCt = neis.size();
+
+			//Spec the file to write to
+			final List<String> lines = new ArrayList<String>();
+			
+
+			//For ea node gen some x number of packets
+			// with some interarrival times
+			// <src = nodeId> <next stop == vary> <arrival time> <stop count>
+			packetCount = rand.nextInt(maxPacket);
+
+			//For ea packet gen:
+			//- randomly select second stop
+			//- gen arrival time
+			//- gen stop count
+			for (int i = 0; i < packetCount; ++i)
+			{
+				//Second stop Idx
+				neiIdx = rand.nextInt(neiCt);
+		
+				//Arrival time
+				arrTime = rand.nextInt(Integer.MAX_VALUE);
+
+				//Stop count
+				stopCount = rand.nextInt(maxStop);
+
+				//Create the line
+				lines.add(String.format("%s %s %d %d\n", 
+						  nodeId, neis.get(neiIdx), arrTime, stopCount));
+			}
+			
+        	Files.write(outFile, lines, StandardOpenOption.APPEND);
+		}
+	}	
 
 	private static void loadNeiMap(String dirName)
 		throws IOException
@@ -45,11 +112,13 @@ public class UniversalTrafficGenerator
 				{
 					//Filename is the node's ID
 					final String nodeId = file.getFileName().toString().split("\\.")[0];
-					nodeMap.put(nodeId, new ArrayList<String>());
+					final List<String> neis = new ArrayList<>();
+					
+					nodeMap.put(nodeId, neis);
 					Stream<String> lines = 	Files.lines(file);
 					lines.forEach(line -> 
 					{
-						nodeMap.get(nodeId).add(line);
+						neis.add(line);
 					});
 				}
 				catch (Exception exc)
