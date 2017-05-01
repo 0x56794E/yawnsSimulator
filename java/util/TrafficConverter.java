@@ -107,9 +107,9 @@ public class TrafficConverter
 	}
 
 	/**
-     * Genera
+     * Generate
 	 */
-	private static void loadNodeTraffic(String trafficFile, int p)
+	private static void toNodeTraffic(String trafficFile, int p)
 	{
 	}
 	
