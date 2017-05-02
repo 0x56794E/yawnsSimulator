@@ -58,6 +58,49 @@ int genNextStop(LPMap lpMap, int curStopId)
 	return nextStopId;
 }
 
+void sendMsg(map<int, pair<int, int>> &rankMap, Event* updatedEvent)
+{
+	//Determine the rank of the reciever
+	int recvRank = 0;
+	for (map<int, pair<int, int>>::const_iterator it = rankMap.begin(); 
+			it != rankMap.end(); ++it)
+	{
+		//key: it->first
+		//value: it->second => pair of (min, max); eg mypair.first, mypair.second
+		pair<int, int> maxmin = it->second;
+
+		if (event->getCurrentStopId() >= maxmin.first 
+			&& event->getCurrentStopId() <= maxmin.second)
+		{
+			recvRank = it->first;
+			break;
+		}
+	}
+
+	//Convert the event into msg and send
+	//1. Turn the event into an array of int
+	//Following order: [timestamp, stop_count, stop_passed]
+	int* data = new int[MSG_SIZE](); //dynamic!! Delete it somewhere
+	data[TIMESTAMP] = event->getTimestamp();
+	data[STOP_COUNT] = event->getStopCount();
+	data[STOP_PASSED] = event->getStopPassed();
+	data[RECV_ID] = event->getCurrentStopId();
+	data[LAST_NODE_ID] = event->getLastNodeId();
+
+	//2. Send off the msg
+	MPI_Request req;
+	MPI_Isend(data, MSG_SIZE, MPI_INT, recvRank, MSG_TAG, MPI_COMM_WORLD, &req);
+
+    //Save this to free later
+	outboxMsg.push_back(data);
+	outboxStatus.push_back(req);
+
+	//++currentEpochCount; ==> WTH is this???
+
+	//Free mem occupied by event; no longer needed
+	delete event;
+}
+
 /**
  * Send the msg
  * Determine whether the next stop is local.
@@ -93,7 +136,8 @@ void sendMsg(SE* se, Event* event, LPMap &lpMap, int nextStopId, map<int, pair<i
 		int recvRank = 0;
 
 		//Determine the rank of the reciever
-		for (map<int, pair<int, int>>::const_iterator it = rankMap.begin(); it != rankMap.end(); ++it)
+		for (map<int, pair<int, int>>::const_iterator it = rankMap.begin(); 
+				it != rankMap.end(); ++it)
 		{
 			//key: it->first
 			//value: it->second => pair of (min, max); eg mypair.first, mypair.second

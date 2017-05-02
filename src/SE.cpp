@@ -42,17 +42,17 @@ SE::SE(int p, int rank, string graph_file_name)
  */
 void SE::handleEvent(Event* event, LP* handler)
 {
+	//NEW STUFF with handler code in LP (May 1, 17)
+	handler->handleEvent(event);
+
+	//=========================
+	//Current (stable?) STUFF
 	handler->incEventCount();
 	event->handled(); //to inc num of stops passed
-
-//	printf("LP %d has handled %d events so far\n",
-//			handler->getId(), handler->getTotalProcessedEvent());
-//	printf("Rank %d's rem eventCount = %d\n", fel.size());
 
 	//THIS is the last stop
 	if (event->getStopPassed() == event->getStopCount())
 	{
-		//TODO: what?
 		//Free the mem occupied by event
 		delete event;
 	}

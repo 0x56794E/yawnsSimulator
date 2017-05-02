@@ -14,7 +14,7 @@
 
 //Tag for "regular" msgs
 const int MSG_TAG = 0;
-const int MSG_SIZE = 4;
+const int MSG_SIZE = 5; //5 integers
 
 //allow inbox to reach up to 25 msgs.
 const int MAX_SIZE = 25;
@@ -23,7 +23,8 @@ const int MAX_SIZE = 25;
 const int TIMESTAMP = 0;
 const int STOP_COUNT = 1;
 const int STOP_PASSED = 2;
-const int HANDLER_ID = 3;
+const int RECV_ID = 3;
+const int LAST_NODE_ID = 4;
 
 void newEpoch();
 

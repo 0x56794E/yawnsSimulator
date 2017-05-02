@@ -9,7 +9,6 @@
 
 //own includes
 #include "Event.h"
-#include "EventComparator.h"
 
 using namespace std;
 
@@ -28,6 +27,7 @@ class LP
 	int getId(); 
   	int getTotalProcessedEvent();
   	void incEventCount();
+	void handleEvent(Event* event, EventQueue &fel, LPMap &lpMap);
 
   protected:
 	LP(int id);
@@ -42,19 +42,21 @@ class LinkLP : public LP
 	vector<int> node1Links; //IDs of all links touching node1
 	vector<int> node2Links; //IDs of all links touching node2
 
- public:
+  public:
 	LinkLP(int id, int node1Id, int node2Id);
 	void addNeighbor(int neiId, int sharedNodeId);
 	int getRandNextStopId(int lastNodeId);
+	void handleEvent(Event* event, EventQueue &fel, LPMap &lpMap);
 }
 
 class NodeLP : public LP
 {
 	vector<int> neighbors;
 
- public:
+  public:
 	NodeLP(int id);
 	void addNeighbor(int neiId);
 	int getRandNextStopId(int lastNodeId);
+	void handleEvent(Event* event, EventQueue &fel, LPMap &lpMap);
 }
 #endif

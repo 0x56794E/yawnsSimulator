@@ -33,7 +33,8 @@ class SE
 	void receiveMsgs();
 
 	//One FEL for all LPs on this proc
-	std::priority_queue<Event*, std::vector<Event*>, EventComparator> fel;
+	//std::priority_queue<Event*, std::vector<Event*>, EventComparator> fel;
+	EventQueue fel;	
 	Event* nextEvent();
 	void handleEvent(Event*, LP*);
 

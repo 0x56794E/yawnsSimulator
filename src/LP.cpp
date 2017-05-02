@@ -6,6 +6,8 @@
 #include <stdlib.h> //for rand(), srand()
 
 const int MAX_INT = std::numeric_limits<int>::max();
+const int ARR = 0;
+const int DEPT = 1;
 
 /***************************
  * LP 
@@ -88,4 +90,65 @@ int NodeLP::getRandNextStopId(int lastNodeId)
 		ret = neighbors.at(idx);		
 	}
 	return ret;
+}
+
+void NodeLP::handleEvent(Event* event, EventQueue &fel, LPMap &lpMap, map<int, pair<int, int>> &rankMap)
+{
+	//Rules:
+	//If event type == DEPARTURE (1) 
+	//  => Schedule Arrive on NEXT stop => create/modify the event!!!
+	//If event type == ARRIVAL (0)
+	//  => Schedule Departure on CURRENT stop
+	//  => KEEP ALL DATA of the event the same EXCEPT for the type and timestamp
+	
+	int stopPassed = event->getStopPassed() + 1;
+
+	if (event.getType() == ARR)
+	{
+		//THIS is the last stop
+		//StopCount == Num of nodes INCLUDING last
+		if (stopPassed == event->getStopCount())
+		{
+			//Free the mem occupied by event
+			delete event;
+		}
+		else		
+		{
+			//Schedule departure on SAME LP; Keep the event data UNCHANGED
+			//Except for the timestamp & event type		
+			event->setTimestamp(event->getTimestamp() + LA);
+			event->setType(DEPT);
+			fel.push(event);
+		}
+	}
+	else
+	{
+		//Create new event object and send off
+		// => Schedule an arrival event at next stop
+		int last_node_id = event->getCurrentStopId();
+		int nextStopId = this->getRandNextStopId(last_node_id);
+		int ts = event->getTimestamp() + LA;
+		int type = ARR;	
+
+		//Update the event
+		event->incStopPassed();
+		event->setLastNodeId(event->getCurrenStopId());
+		event->setCurrentStopId(nextStopId);
+		event->setEvetType(ARR);
+		event->setTimestamp(ts);
+
+		//Determine whether inter-proc comm is needed
+		if (lpMap.find(nextStopId) == lpMap.end())
+		{
+			//ONLY call communicator AFTER determine 
+			//if next stop is on other proc
+			sendMsg(rankMap, event);
+		}
+		else
+		{
+			//Schedule on the current proc 
+			//with new handler and updated data
+			fel.push(event);
+		}
+	}
 }
