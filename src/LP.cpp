@@ -66,6 +66,83 @@ int LinkLP::getRandNextStopId(int lastNodeId)
 	}
 }
 
+int LinkLP::getOtherEnd(int nodeId)
+{
+	if (node1Id == nodeId)
+		return node2Id;
+	else
+		return node1Id;
+}
+
+void LinkLP::handleEvent(Event* event, EventQueue &fel, LPMap &lpMap, map<int, pair<int, int>> &rankMap)
+{
+	//Rules:
+	//If type == ARR
+	//  => inc stop count 
+	//  => schedule DEPT on current link
+	//If type == DEPT	
+	//  => schedule ARR on next link
+
+	//HOW to know if this is last stop:
+	//Last stop is of DEPT type with stopPassed + 1 == stop count
+
+	if (event->getType() == DEPT)
+	{
+		//Check if last stop
+		//THIS is the last stop
+		if (event->getStopPassed() + 1 == event->getStopCount())
+		{
+			//Free the mem occupied by event
+			delete event;
+		}
+		//If not, Schedule ARR on next link
+		else		
+		{
+			//Determine next link
+
+			//Create new event object and send off
+			// => Schedule an arrival event at next stop
+			int nextStopId = this->getRandNextStopId(event->getLastNodeId());
+			int ts = event->getTimestamp() + LA;
+	
+			//Update the event
+			event->incStopPassed();
+			
+			//update the last node ID
+			int newLastNodeId = this->getOtherEnd(event->getLastNodeId());
+			event->setLastNodeId(newLastNodeId);
+
+			event->setCurrentStopId(nextStopId);
+			event->setEvetType(ARR);
+			event->setTimestamp(ts);
+
+			//Determine whether inter-proc comm is needed
+			if (lpMap.find(nextStopId) == lpMap.end())
+			{
+				//ONLY call communicator AFTER determine 
+				//if next stop is on other proc
+				sendMsg(rankMap, event);
+			}
+			else
+			{
+				//Schedule on the current proc 
+				//with new handler and updated data
+				fel.push(event);
+			}
+		}
+	}
+	else
+	{
+		//Schedule Dept on current link (== current proc)
+		//1. update timestamp
+		//2. update type
+		event->setTimestamp(event->getTimestamp() + LA);	
+		event->setType(DEPT);
+		//Keep last node ID???	
+		fel.push(event);
+	}
+}
+
 /***************************
  * Node LP 
  ***************************/
@@ -101,13 +178,11 @@ void NodeLP::handleEvent(Event* event, EventQueue &fel, LPMap &lpMap, map<int, p
 	//  => Schedule Departure on CURRENT stop
 	//  => KEEP ALL DATA of the event the same EXCEPT for the type and timestamp
 	
-	int stopPassed = event->getStopPassed() + 1;
-
 	if (event.getType() == ARR)
 	{
 		//THIS is the last stop
 		//StopCount == Num of nodes INCLUDING last
-		if (stopPassed == event->getStopCount())
+		if (event->getStopPassed() + 1 == event->getStopCount())
 		{
 			//Free the mem occupied by event
 			delete event;
@@ -125,11 +200,9 @@ void NodeLP::handleEvent(Event* event, EventQueue &fel, LPMap &lpMap, map<int, p
 	{
 		//Create new event object and send off
 		// => Schedule an arrival event at next stop
-		int last_node_id = event->getCurrentStopId();
 		int nextStopId = this->getRandNextStopId(last_node_id);
 		int ts = event->getTimestamp() + LA;
-		int type = ARR;	
-
+	
 		//Update the event
 		event->incStopPassed();
 		event->setLastNodeId(event->getCurrenStopId());

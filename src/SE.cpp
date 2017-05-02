@@ -43,10 +43,11 @@ SE::SE(int p, int rank, string graph_file_name)
 void SE::handleEvent(Event* event, LP* handler)
 {
 	//NEW STUFF with handler code in LP (May 1, 17)
-	handler->handleEvent(event);
+	handler->handleEvent(event, fel, lpMap, rankMap);
 
 	//=========================
 	//Current (stable?) STUFF
+/*
 	handler->incEventCount();
 	event->handled(); //to inc num of stops passed
 
@@ -63,6 +64,7 @@ void SE::handleEvent(Event* event, LP* handler)
 		event->setTimestamp(event->getTimestamp() + LA);
 		sendMsg(this, event, lpMap, handler->getRandNeiId(), rankMap);
 	}
+*/
 }
 
 /**

@@ -27,8 +27,7 @@ class LP
 	int getId(); 
   	int getTotalProcessedEvent();
   	void incEventCount();
-	void handleEvent(Event* event, EventQueue &fel, LPMap &lpMap);
-
+	void handleEvent(Event* event, EventQueue &fel, LPMap &lpMap, map<int, pair<int, int>> &rankMap)
   protected:
 	LP(int id);
 	int id;
@@ -44,6 +43,7 @@ class LinkLP : public LP
 
   public:
 	LinkLP(int id, int node1Id, int node2Id);
+	int getOtherEnd(int lastNodeId);
 	void addNeighbor(int neiId, int sharedNodeId);
 	int getRandNextStopId(int lastNodeId);
 	void handleEvent(Event* event, EventQueue &fel, LPMap &lpMap);
