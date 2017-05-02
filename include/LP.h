@@ -17,7 +17,7 @@ class LP;
 class LinkLP;
 class NodeLP;
 
-typedef map<int, LP*> LPMap; //key: LP's id; value: LP
+//typedef map<int, LP*> LPMap; //key: LP's id; value: LP
 typedef map<int, LinkLP*> LinkLPMap; //key: LP's id; value: NodeLP
 typedef map<int, NodeLP*> NodeLPMap; //key: LP's id; value: LinkLP
 
@@ -27,7 +27,7 @@ class LP
 	int getId(); 
   	int getTotalProcessedEvent();
   	void incEventCount();
-	void handleEvent(Event* event, EventQueue &fel, LPMap &lpMap, map<int, pair<int, int>> &rankMap)
+	//void handleEvent(Event* event, EventQueue &fel, LPMap &lpMap, map<int, pair<int, int>> &rankMap)
   protected:
 	LP(int id);
 	int id;
@@ -46,7 +46,7 @@ class LinkLP : public LP
 	int getOtherEnd(int lastNodeId);
 	void addNeighbor(int neiId, int sharedNodeId);
 	int getRandNextStopId(int lastNodeId);
-	void handleEvent(Event* event, EventQueue &fel, LPMap &lpMap);
+	void handleEvent(Event* event, EventQueue &fel, LinkLPMap &lpMap);
 }
 
 class NodeLP : public LP
@@ -57,6 +57,6 @@ class NodeLP : public LP
 	NodeLP(int id);
 	void addNeighbor(int neiId);
 	int getRandNextStopId(int lastNodeId);
-	void handleEvent(Event* event, EventQueue &fel, LPMap &lpMap);
+	void handleEvent(Event* event, EventQueue &fel, NodeLPMap &lpMap);
 }
 #endif

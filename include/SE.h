@@ -24,10 +24,10 @@ class SE
 	int rank;
 	vector<int *> outbox; //List of outgoing msgs
 	int* msgCount; //Number of msgs sent to ea proc in current epoch
+	MODEL_TYPE type;
 
 	//LPs
 	//HACKY BUT DESPERATE TIMES...!!!
-	LPMap lpMap; //Map of all LP residing on this proc
 	LinkLPMap linkLPMap;
 	NodeLPMap nodeLPMap;
 
@@ -41,7 +41,10 @@ class SE
 	//std::priority_queue<Event*, std::vector<Event*>, EventComparator> fel;
 	EventQueue fel;	
 	Event* nextEvent();
-	void handleEvent(Event*, LP*);
+	
+	//VERY stupid but im desperate right now...
+	void runNode();
+	void runLink();
 
   public:
   	SE(int lpCount, int rank, string graph_file_name, MODEL_TYPE type);

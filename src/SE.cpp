@@ -19,6 +19,7 @@ SE::SE(int p, int rank, string graph_file_name, MODEL_TYPE type)
 {
 	this->p = p;
 	this->rank = rank;
+	this->type = type;
 
 	//init msg count to other procs
 	msgCount = new int[p];
@@ -39,18 +40,19 @@ SE::SE(int p, int rank, string graph_file_name, MODEL_TYPE type)
 
 /**
  * Gen next stop on the fly
- */
+
 void SE::handleEvent(Event* event, LP* handler)
 {
 	//NEW STUFF with handler code in LP (May 1, 17)
-	handler->handleEvent(event, fel, lpMap, rankMap);
+	if (this->type == LINK)
+		handler->handleEvent(event, fel, linkLPMap, rankMap);
+	else
+		handler->handleEvent(event, fel, nodeLPMap, rankMap);
 }
-
-/**
- * The "main loop"
- */
-void SE::run()
+*/
+void SE::runLink()
 {
+
 	int local_done = 0, global_done = 0;
 	int global_lbts, epoch = 0;
 	LP* lp;
@@ -73,7 +75,7 @@ void SE::run()
 		while (!(this->fel).empty() && this->peekNextTimestamp() <= global_lbts)
 		{
 			Event* event = this->nextEvent();
-			this->handleEvent(event, lpMap[event->getCurrentStopId()]);
+			linkLPMap[event->getCurrentStopId()]->handleEvent(event, fel, linkLPMap, rankMap);
 		}
 
 		//Reset msgCount
@@ -89,9 +91,66 @@ void SE::run()
 		MPI_Allreduce(&local_done, &global_done, 1, MPI_INT, MPI_LAND, MPI_COMM_WORLD);
 	}
 
+}
+
+void SE::runNode()
+{
+
+	int local_done = 0, global_done = 0;
+	int global_lbts, epoch = 0;
+	LP* lp;
+
+	while (!local_done || !global_done)
+	{
+		//printf("Rank %d starting epoch %d\n", rank, epoch);
+
+		//Determine LBTS
+		global_lbts = compLBTS();
+		//printf("\tRank %d, epoch %d: finish comp LBTS: %d\n", rank, epoch, global_lbts);
+
+		//Receive all msgs from prev epoch
+		//TODO: this can be done in another thread while e proc is IP
+		receiveMsgs();
+		//printf("\tRank %d, epoch %d: finish recv Msgs\n", rank, epoch);
+
+		//Handle all events w ts < lbts
+		//while there's still event
+		while (!(this->fel).empty() && this->peekNextTimestamp() <= global_lbts)
+		{
+			Event* event = this->nextEvent();
+			nodeLPMap[event->getCurrentStopId()]->handleEvent(event, fel, nodeLPMap, rankMap);
+		}
+
+		//Reset msgCount
+		for (int i = 0; i < p; ++i)
+			msgCount[i] = 0;
+
+		//Advance epoch count
+		++epoch;
+		newEpoch();
+
+		//Determine if all LPs accross all procs are done
+		local_done = (this->fel).empty();
+		MPI_Allreduce(&local_done, &global_done, 1, MPI_INT, MPI_LAND, MPI_COMM_WORLD);
+	}
+
+}
+
+/**
+ * The "main loop"
+ */
+void SE::run()
+{
+	//VERY STUPID BUT will fix later
+	if (type == LINK)
+		runLink();
+	else
+		runNode();
+
 	//clean up
 	delete[] msgCount;
 }
+
 
 
 /*******************

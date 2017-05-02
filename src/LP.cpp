@@ -74,7 +74,7 @@ int LinkLP::getOtherEnd(int nodeId)
 		return node1Id;
 }
 
-void LinkLP::handleEvent(Event* event, EventQueue &fel, LPMap &lpMap, map<int, pair<int, int>> &rankMap)
+void LinkLP::handleEvent(Event* event, EventQueue &fel, LinkLPMap &lpMap, map<int, pair<int, int>> &rankMap)
 {
 	//Rules:
 	//If type == ARR
@@ -169,7 +169,7 @@ int NodeLP::getRandNextStopId(int lastNodeId)
 	return ret;
 }
 
-void NodeLP::handleEvent(Event* event, EventQueue &fel, LPMap &lpMap, map<int, pair<int, int>> &rankMap)
+void NodeLP::handleEvent(Event* event, EventQueue &fel, LinkLPMap &lpMap, map<int, pair<int, int>> &rankMap)
 {
 	//Rules:
 	//If event type == DEPARTURE (1) 
