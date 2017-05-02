@@ -89,11 +89,11 @@ public class UniversalTrafficGenerator
 				stopCount = rand.nextInt(maxStop);
 
 				//Create the line
-				lines.add(String.format("%s %s %d %d\n", 
+				lines.add(String.format("%s %s %d %d", 
 						  nodeId, neis.get(neiIdx), arrTime, stopCount));
 			}
 			
-        	Files.write(outFile, lines, StandardOpenOption.APPEND);
+        	Files.write(outFile, lines, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
 		}
 	}	
 

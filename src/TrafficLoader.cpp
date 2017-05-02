@@ -24,8 +24,9 @@ using namespace std;
  * schedule the initial event -
  * the packets that originate from the local LP.
  * The file contains ONLY traffic originate from local LPs
+ * startEventType => If Node model, startEventType == Dept; If link, startEventType == Arr
  */
-void loadScalefreeTraffic(int rank, int p, string graph_file_name, SE* se)
+void loadScalefreeTraffic(int rank, int p, string graph_file_name, SE* se, int startEventType)
 {
 	//file name format: <graph_file_name>_traffic_p_rank
 	string file_name = graph_file_name + "_traffic_" + to_string(static_cast<long long>(p)) + "_" + to_string(static_cast<long long>(rank));
@@ -35,17 +36,18 @@ void loadScalefreeTraffic(int rank, int p, string graph_file_name, SE* se)
 	{
 		int eCount = 0;
 
-		int startLP, startTime, stopCount;
+		int startLP, lastNodeId, startTime, stopCount;
 
 		//line by line; ea line is an event for an LP
 		string line;
 		while (getline(infile, line))
 		{
 			istringstream iss(line);
-			iss >> startLP >> startTime >> stopCount;
+			iss >> startLP >> lastNodeId >> startTime >> stopCount;
 
 			//Initial event
-			Event* event = new Event(startTime, stopCount, startLP, 1);
+//Event::Event(int ts, int stop_count, int lpId, int stop_passed, int type, int last_node_id)
+			Event* event = new Event(startTime, stopCount, startLP, 1, startEventType, lastNodeId);
 
 			//schedule event on appropriate LP
 			se->scheduleEvent(event);

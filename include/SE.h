@@ -7,6 +7,7 @@
 
 #include "Event.h"
 #include "LP.h"
+#include "TopologyUtils.h"
 
 using namespace std;
 
@@ -25,7 +26,11 @@ class SE
 	int* msgCount; //Number of msgs sent to ea proc in current epoch
 
 	//LPs
+	//HACKY BUT DESPERATE TIMES...!!!
 	LPMap lpMap; //Map of all LP residing on this proc
+	LinkLPMap linkLPMap;
+	NodeLPMap nodeLPMap;
+
 	map<int, pair<int, int>> rankMap; //Map spec range of LP IDs on ea proc; key: rank; val: array of size 2: [minID, maxId]
 
 	//Methods
@@ -39,7 +44,7 @@ class SE
 	void handleEvent(Event*, LP*);
 
   public:
-  	SE(int lpCount, int rank, string graph_file_name);
+  	SE(int lpCount, int rank, string graph_file_name, MODEL_TYPE type);
   	void run(); //start event processing
 	int getTotalProcessedEvent(); //total number of events processed by all LPs on this SE
 	void scheduleEvent(Event*);

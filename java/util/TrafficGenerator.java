@@ -19,7 +19,7 @@ import java.util.stream.Stream;
  * Ea line has this format: <source LP ID> <start time> <stop count>
  * 
  * TODO: make interarrival time follow poisson
- * @obsolete 
+ * @obsolete as of May 1
  * @author Vy Thuy Nguyen
  * @since 2/22/2017
  */

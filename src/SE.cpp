@@ -3,7 +3,6 @@
 #include <string> //for string
 //own includes
 #include "SE.h"
-#include "TopologyUtils.h"
 #include "TrafficLoader.h"
 #include "Communicator.h"
 
@@ -16,25 +15,21 @@ const int LA = 10;
 /******************
  * PUBLIC members *
  ******************/
-//TODO: REMOVE GRID SIZE!!!
-//Find num of LPs in total?
-SE::SE(int p, int rank, string graph_file_name)
+SE::SE(int p, int rank, string graph_file_name, MODEL_TYPE type)
 {
 	this->p = p;
 	this->rank = rank;
 
 	//Load LPs & init msgCount
-	loadScalefreeLP(LINK, rank, p, graph_file_name, lpMap, rankMap);
-//	printf("Rank %d done loading graph\n", rank);
+	//TODO: use the right LP map
+	//based on type
+	loadScalefreeLP(type, rank, p, graph_file_name, lpMap, rankMap);
 
 	//init msg count to other procs
 	msgCount = new int[p];
 	for (int i = 0; i < p; ++i)
 		msgCount[i] = 0;
-//	printf("Rank %d done init msg ct\n", rank);
-
-	loadScalefreeTraffic(rank, p, graph_file_name, this);
-//	printf("Rank %d done loading traffic\n", rank);
+	loadScalefreeTraffic(rank, p, graph_file_name, this, type == LINK ? 0 : 1);
 }
 
 /**

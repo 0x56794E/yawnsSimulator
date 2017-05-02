@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
 	srand(time(NULL) + rank);
 
 	//Create the exec
-	SE se(p, rank, argv[1]);
+	SE se(p, rank, argv[1], LINK);
 	//printf("Rank %d finished setting up\n", rank);
 
 	//Start timer
