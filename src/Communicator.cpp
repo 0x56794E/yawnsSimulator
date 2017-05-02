@@ -102,11 +102,13 @@ void sendMsg(map<int, pair<int, int>> &rankMap, Event* updatedEvent)
 }
 
 /**
+ * OBSOLETE!!!! see above
  * Send the msg
  * Determine whether the next stop is local.
  * If local, simply schedule the event
  * Otherwise, send the msg to appropriate proc
  */
+/*
 void sendMsg(SE* se, Event* event, LPMap &lpMap, int nextStopId, map<int, pair<int, int>> &rankMap)
 {
 	//Incr the total msg count
@@ -169,7 +171,7 @@ void sendMsg(SE* se, Event* event, LPMap &lpMap, int nextStopId, map<int, pair<i
 		//schedule directly
 		//lpMap[nextStopId]->scheduleEvent(event);
 	}
-}
+}*/
 
 void receiveMsg(MPI_Status status, SE* se)
 {
@@ -177,7 +179,12 @@ void receiveMsg(MPI_Status status, SE* se)
 	MPI_Recv(&recv_buf, MSG_SIZE, MPI_INT, status.MPI_SOURCE, MSG_TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
 	//Construct event obj and schedule on appropriate LP
-	Event* e = new Event (recv_buf[TIMESTAMP], recv_buf[STOP_COUNT], recv_buf[HANDLER_ID], recv_buf[STOP_PASSED]);
+	Event* e = new Event (recv_buf[TIMESTAMP], 
+						  recv_buf[STOP_COUNT], 
+    					  recv_buf[RECV_ID], 
+						  recv_buf[STOP_PASSED], 
+						  0, //event type is always arrival == 0
+						  recv_buf[LAST_NODE_ID]);
 
 	se->scheduleEvent(e);
 }
