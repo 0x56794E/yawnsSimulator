@@ -1,13 +1,13 @@
 #ifndef EVENT_H
 #define EVENT_H
 
-#include "EventComparator.h"
 #include <queue> //for queue
 
 using namespace std;
 
 //Forward decl
 class Event;
+class EventComparator;
 
 typedef std::priority_queue<Event*, std::vector<Event*>, EventComparator> EventQueue;
 
@@ -35,6 +35,21 @@ class Event
 	void setTimestamp(int); //to reuse the event for same-proc comm
 	void setLastNodeId(int);
 	void setType(int);
+};
+
+
+/**
+ * Comparator for ASC order
+ * i.e., smallest element should be at the head
+ * of the queue and removed first.
+ */
+class EventComparator
+{
+public:
+    bool operator() (Event* a, Event* b)
+    {
+        return a->getTimestamp() > b->getTimestamp();
+    }
 };
 
 #endif

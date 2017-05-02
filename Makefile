@@ -20,7 +20,7 @@ CFLAGS = -I$(IDIR) -g -std=gnu++0x
 LIBS = -lm
 	
 #list .h files
-_DEPS = Event.h LP.h TrafficLoader.h TopologyUtils.h EventComparator.h Communicator.h SE.h
+_DEPS = Event.h LP.h TrafficLoader.h TopologyUtils.h Communicator.h SE.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 	
 #spec rules for making .o files

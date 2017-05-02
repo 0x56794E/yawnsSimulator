@@ -9,13 +9,14 @@ const int MAX_INT = std::numeric_limits<int>::max();
 const int ARR = 0;
 const int DEPT = 1;
 
+const int LA = 10;
 /***************************
  * LP 
  ***************************/
 LP::LP(int id)
 {
 	LP::id = id;
-	LP.totalEvent = 0;
+	LP::totalEvent = 0;
 	srand(time(NULL));
 }
 
@@ -113,7 +114,7 @@ void LinkLP::handleEvent(Event* event, EventQueue &fel, LinkLPMap &lpMap, map<in
 			event->setLastNodeId(newLastNodeId);
 
 			event->setCurrentStopId(nextStopId);
-			event->setEvetType(ARR);
+			event->setType(ARR);
 			event->setTimestamp(ts);
 
 			//Determine whether inter-proc comm is needed
@@ -178,7 +179,7 @@ void NodeLP::handleEvent(Event* event, EventQueue &fel, LinkLPMap &lpMap, map<in
 	//  => Schedule Departure on CURRENT stop
 	//  => KEEP ALL DATA of the event the same EXCEPT for the type and timestamp
 	
-	if (event.getType() == ARR)
+	if (event->getType() == ARR)
 	{
 		//THIS is the last stop
 		//StopCount == Num of nodes INCLUDING last
@@ -205,9 +206,9 @@ void NodeLP::handleEvent(Event* event, EventQueue &fel, LinkLPMap &lpMap, map<in
 	
 		//Update the event
 		event->incStopPassed();
-		event->setLastNodeId(event->getCurrenStopId());
+		event->setLastNodeId(event->getCurrentStopId());
 		event->setCurrentStopId(nextStopId);
-		event->setEvetType(ARR);
+		event->setType(ARR);
 		event->setTimestamp(ts);
 
 		//Determine whether inter-proc comm is needed
