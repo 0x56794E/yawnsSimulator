@@ -125,18 +125,17 @@ public class TrafficConverter
             final List<String> outputlines = new ArrayList<>();
             
             //Get input file for ea proc - the LP list for ea proc
-            Stream<String> lps = Files.lines(Paths.get(graphFileName + "_" + p + "_" + rank));
+            Stream<String> lps = Files.lines(Paths.get("link_" + graphFileName + "_" + p + "_" + rank));
 
-            lps.forEach(lp -> process(lp, outputlines));
+            lps.forEach(lp -> processLink(lp, outputlines));
             
             //Output file for ea proc
-            outputFileName = graphFileName + "_traffic_" + p + "_" + rank;
+            outputFileName = "link_" + graphFileName + "_traffic_" + p + "_" + rank;
             Files.write(Paths.get(outputFileName), outputlines);
         }
 	}
 
-
-    private static void process(String lpInfo, List<String> lines)
+    private static void processLink(String lpInfo, List<String> lines)
     {
         //Line format: <LINK ID><delim><SRCID><delim><DSTID>
         String[] toks = lpInfo.split("\\s+");
@@ -146,14 +145,55 @@ public class TrafficConverter
 		if (cont == null)
 			cont = linkIDMap.get(String.format("%s %s", toks[2], toks[1]));
 
-		lines.addAll(cont.getTraffic());
+		if (cont != null)
+			lines.addAll(cont.getTraffic());
     }
 
 	/**
-     * Generate
+     * Simply remove next stop?
+	 * Ea line's format: <start node id> <next node id> <start time> <stop count == num node>
+	 * Want: <start node ID> <last visited node id> <start time> <stop count>
 	 */
-	private static void toNodeTraffic(String trafficFile, int p)
+	private static void toNodeTraffic(String trafficFile, int p, String graphFileName)
+		throws IOException
 	{
+		String outputFileName;
+
+		//Categorize lines into the right bin
+		//key: start node Id
+		//val: List<String> trafficLines
+		Map<String, List<String>> trafMap = new HashMap<>();
+
+		Stream<String> trafLines = Files.lines(Paths.get(trafficFile));
+		trafLines.forEach(line -> {
+			String[] toks = line.split("\\s+");
+
+			if (!trafMap.containsKey(toks[0]))
+				trafMap.put(toks[0], new ArrayList<String>());
+
+			trafMap.get(toks[0]).add(String.format("%s %s %s %s", 
+					toks[0], toks[0], toks[2], toks[3]));
+		});
+
+		for (int rank = 0; rank < p; ++rank)
+		{
+			//Lines to write for each proc.
+            //Ea line has format: <Source LP ID> <start time> <stop count>
+            final List<String> outputlines = new ArrayList<>();
+            
+            //Get input file for ea proc - the LP list for ea proc
+			//ea line is the node id
+            Stream<String> lps = Files.lines(Paths.get("node_" + graphFileName + "_" + p + "_" + rank));
+			lps.forEach(lpId -> {
+				if (trafMap.containsKey(lpId.trim()))
+					outputlines.addAll(trafMap.get(lpId.trim()));
+			});
+
+            //Output file for ea proc
+            outputFileName = "node_" + graphFileName + "_traffic_" + p + "_" + rank;
+            Files.write(Paths.get(outputFileName), outputlines);
+			
+		}
 	}
 	
 }
