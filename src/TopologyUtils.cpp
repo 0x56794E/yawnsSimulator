@@ -60,6 +60,7 @@ int getLinkRank(int lpId, int n, int p)
  * @param lpMap: the lpMap for this proc (ONLY one instance per proc)
  * TODO: spec network size and stuff
  */
+/*
 void loadScalefreeLP(MODEL_TYPE type, int rank, int p, string fileName, LPMap &lpMap, map<int, pair<int, int>> &rankMap)
 {
 	switch (type)
@@ -76,7 +77,7 @@ void loadScalefreeLP(MODEL_TYPE type, int rank, int p, string fileName, LPMap &l
 			printf("Unknown node type: %d. Exiting\n", type);
 			exit(1);
 	}
-}
+}*/
 
 //INDEPENDENT of the number of procs being used!!!
 string getNeighborFileName(int lpId, string graphFileName)

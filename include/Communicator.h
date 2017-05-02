@@ -28,7 +28,7 @@ const int LAST_NODE_ID = 4;
 
 void newEpoch();
 
-void sendMsg(SE* se, Event* event, LPMap &lpMap, int nextStopId, map<int, pair<int, int>> &rankMap);
+void sendMsg(map<int, pair<int, int>> &rankMap, Event* updatedEvent);
 
 /**
  * Receive msg and schedule it on appropriate LP

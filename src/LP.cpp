@@ -200,7 +200,7 @@ void NodeLP::handleEvent(Event* event, EventQueue &fel, LPMap &lpMap, map<int, p
 	{
 		//Create new event object and send off
 		// => Schedule an arrival event at next stop
-		int nextStopId = this->getRandNextStopId(last_node_id);
+		int nextStopId = this->getRandNextStopId(event->getLastNodeId());
 		int ts = event->getTimestamp() + LA;
 	
 		//Update the event

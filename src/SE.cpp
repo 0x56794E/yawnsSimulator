@@ -20,16 +20,21 @@ SE::SE(int p, int rank, string graph_file_name, MODEL_TYPE type)
 	this->p = p;
 	this->rank = rank;
 
-	//Load LPs & init msgCount
-	//TODO: use the right LP map
-	//based on type
-	loadScalefreeLP(type, rank, p, graph_file_name, lpMap, rankMap);
-
 	//init msg count to other procs
 	msgCount = new int[p];
 	for (int i = 0; i < p; ++i)
 		msgCount[i] = 0;
-	loadScalefreeTraffic(rank, p, graph_file_name, this, type == LINK ? 0 : 1);
+
+	if (type == LINK)
+	{
+		doLoadLink(rank, p, graph_file_name, linkLPMap, rankMap);
+		loadScalefreeTraffic(rank, p, graph_file_name, this, 0);
+	}
+	else
+	{
+		doLoadNode(rank, p, graph_file_name, nodeLPMap, rankMap);
+		loadScalefreeTraffic(rank, p, graph_file_name, this, 1);
+	}
 }
 
 /**
@@ -39,27 +44,6 @@ void SE::handleEvent(Event* event, LP* handler)
 {
 	//NEW STUFF with handler code in LP (May 1, 17)
 	handler->handleEvent(event, fel, lpMap, rankMap);
-
-	//=========================
-	//Current (stable?) STUFF
-/*
-	handler->incEventCount();
-	event->handled(); //to inc num of stops passed
-
-	//THIS is the last stop
-	if (event->getStopPassed() == event->getStopCount())
-	{
-		//Free the mem occupied by event
-		delete event;
-	}
-	//TODO: no need for if. Just 2b safe :D => will check
-	else if (event->getStopPassed() < event->getStopCount())
-	{
-		//Send msg to nextStop
-		event->setTimestamp(event->getTimestamp() + LA);
-		sendMsg(this, event, lpMap, handler->getRandNeiId(), rankMap);
-	}
-*/
 }
 
 /**
