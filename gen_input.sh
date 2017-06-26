@@ -21,10 +21,15 @@ else
     python python/GenGraph.py $1 $2 > "g$1_$2"
 
     ######
-    # (2) Generate files listing links for ea proc
+    # (2) Generate files listing links/nodes for ea proc
     #####
-    link_count=$(cat "g$1_$2" | wc -l)
-    python python/GenLinkPerProc.py "g$1_$2" " " $3 $link_count
+
+    # uncomment to use link 
+    # link_count=$(cat "g$1_$2" | wc -l)
+    # python python/GenLinkPerProc.py "g$1_$2" " " $3 $link_count
+
+    #$1 == node count
+    python python/GenNodePerProc.py "g$1_$2" " " $3 $1
 
     #####
     # (3) Generate neighbor files
@@ -39,13 +44,13 @@ else
     #    cp "$f" java/util/$f
     #done
 
-    javac -d . java/util/NeighborFinder.java
-    java NeighborFinder "g$1_$2" " "
+    javac -d . java/util/NodeNeighborFinder.java
+    java NodeNeighborFinder "g$1_$2" " "
 
     ####
     # (4) Generate Traffic
     ####
 
-    javac -d . java/util/TrafficGenerator.java
-    java TrafficGenerator "g$1_$2" $3 " "
+    javac -d . java/util/UniversalTrafficGenerator.java
+    java UniversalTrafficGenerator "g$1_$2" $3 " "
 fi
