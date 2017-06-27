@@ -29,12 +29,12 @@ SE::SE(int p, int rank, string graph_file_name, MODEL_TYPE type)
 	if (type == LINK)
 	{
 		doLoadLink(rank, p, graph_file_name, linkLPMap, rankMap);
-		loadScalefreeTraffic(rank, p, graph_file_name, this, 0);
+		loadScalefreeTraffic(rank, p, graph_file_name, this, 0, "link_");
 	}
 	else
 	{
 		doLoadNode(rank, p, graph_file_name, nodeLPMap, rankMap);
-		loadScalefreeTraffic(rank, p, graph_file_name, this, 1);
+		loadScalefreeTraffic(rank, p, graph_file_name, this, 1, "node_");
 	}
 }
 

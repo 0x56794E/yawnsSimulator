@@ -26,10 +26,10 @@ using namespace std;
  * The file contains ONLY traffic originate from local LPs
  * startEventType => If Node model, startEventType == Dept; If link, startEventType == Arr
  */
-void loadScalefreeTraffic(int rank, int p, string graph_file_name, SE* se, int startEventType)
+void loadScalefreeTraffic(int rank, int p, string graph_file_name, SE* se, int startEventType, string modelType)
 {
-	//file name format: <graph_file_name>_traffic_p_rank
-	string file_name = graph_file_name + "_traffic_" + to_string(static_cast<long long>(p)) + "_" + to_string(static_cast<long long>(rank));
+	//file name format: <model type>_<graph_file_name>_traffic_p_rank
+	string file_name = modelType + graph_file_name + "_traffic_" + to_string(static_cast<long long>(p)) + "_" + to_string(static_cast<long long>(rank));
 	ifstream infile (file_name);
 
 	if (infile.is_open())

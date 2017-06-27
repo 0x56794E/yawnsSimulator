@@ -9,6 +9,6 @@
 
 using namespace std;
 
-void loadScalefreeTraffic(int rank, int p, string graph_file_name, SE* se, int startEventType);
+void loadScalefreeTraffic(int rank, int p, string graph_file_name, SE* se, int startEventType, string modelType);
 
 #endif
