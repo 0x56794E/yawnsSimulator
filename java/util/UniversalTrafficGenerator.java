@@ -13,7 +13,7 @@ import java.util.Random;
 
 /**
  * Given a graph topo file => generate traffic
- * ==> diff btw node and link should be det'ed in loader
+ * ==> diff btw node and link should be det'ed in loader (using TrafficConverter)
  * Line output: <first stop's node id> <second stop's node id> <arrival time> <stop/hops count>
  *
  * Generate traffic for all links/nodes on all procs 
@@ -30,22 +30,24 @@ public class UniversalTrafficGenerator
 	public static void main(String[] args)
 		throws IOException
 	{	
-		loadNeiMap("g1000_5_node_nei"); 
-		genTraffic();
+		String graphFile = args[0];
+		String dirName = graphFile + "_node_nei"; //dir containing neighbors for nodes
+		loadNeiMap(dirName); 
+		genTraffic(graphFile);
 	}
 
 	/**
 	 * REQ: the traffic map has already been loaded
-	 * Gen traffic for ALL node
+	 * Gen traffic for ALL nodes
 	 */
-	private static void genTraffic()
+	private static void genTraffic(String graphFile)
 		throws IOException
 	{
 		int maxPacket = 100;
 		int maxStop = 10; //Number of nodes the packet goes thru => incls both ends.
 
 		//Output file name
-		String outputFileName = "testout.txt";
+		String outputFileName = "uniTraffic_" + graphFile + ".txt";
 		Path outFile = Paths.get(outputFileName);
 		//TODO: use one rand gen for now
 		//FIX THIS!!

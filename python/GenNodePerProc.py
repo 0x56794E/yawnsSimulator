@@ -19,13 +19,11 @@ import math #for floor
 # p: number of procs
 # n: number of nodes
 def genNodeIdFiles(graph_file_name, p, n):
-    #TODO:
     #Output file format: <node_id>
 
     rem = n % p    
     counts = [] #number of nodes for ea proc
     count = math.floor(n/p)
-    
     for i in range (p):
         counts.append(count)
 
@@ -42,16 +40,15 @@ def genNodeIdFiles(graph_file_name, p, n):
     #Generate for ea proc
     #Since the nodes are ID'ed from 0 => no need to read from file for IDs
     #IDs would be in range [0, n-1]
-
     for node_id in range (n):
         # move on to next proc
         if count >= counts[cur_p]:
-            count = 0
-            cur_p = cur_p + 1
+			count = 0
+			cur_p = cur_p + 1
 
-            #update output file name
-            out_file.close()
-            out_file = open(out_file_name + str(cur_p), 'w')
+			#update output file name
+			out_file.close()
+			out_file = open(out_file_name + str(cur_p), 'w')
 
         # Write the line to the file
         out_file.write(str(node_id) + '\n')
@@ -60,7 +57,7 @@ def genNodeIdFiles(graph_file_name, p, n):
     
 if __name__ == '__main__':
     if len(sys.argv) != 4:
-        print 'Usage: python GenNodePerProc.py <file_name> <proc_count> <node_count>\n'
+        print 'Usage: python GenNodePerProc.py <file_name> <proc_count> <node_count>\nExiting...'
         sys.exit(1)
 
     genNodeIdFiles(sys.argv[1], int(sys.argv[2]), int(sys.argv[3]))

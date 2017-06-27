@@ -1,5 +1,5 @@
 #! /bin/bash
-# Script input: <node count> <min deg> <proc count>  <delim for graph file; opt>
+# Script input: <$1==node count> <$2==min deg> <$3==proc count>  <delim for graph file; opt>
 # Does the following things
 # (1) Generate graph file
 # (2) Generate files listing links for each proc
@@ -25,11 +25,11 @@ else
     #####
 
     # uncomment to use link 
-    # link_count=$(cat "g$1_$2" | wc -l)
-    # python python/GenLinkPerProc.py "g$1_$2" " " $3 $link_count
+    link_count=$(cat "g$1_$2" | wc -l)
+    python python/GenLinkPerProc.py "g$1_$2" " " $3 $link_count
 
     #$1 == node count
-    python python/GenNodePerProc.py "g$1_$2" " " $3 $1
+    python python/GenNodePerProc.py "g$1_$2" $3 $1
 
     #####
     # (3) Generate neighbor files
@@ -44,6 +44,9 @@ else
     #    cp "$f" java/util/$f
     #done
 
+    javac -d . java/util/NeighborFinder.java
+    java NeighborFinder "g$1_$2" " "
+
     javac -d . java/util/NodeNeighborFinder.java
     java NodeNeighborFinder "g$1_$2" " "
 
@@ -52,5 +55,12 @@ else
     ####
 
     javac -d . java/util/UniversalTrafficGenerator.java
-    java UniversalTrafficGenerator "g$1_$2" $3 " "
+    java UniversalTrafficGenerator "g$1_$2"
+
+	####
+ 	# (5) Call traffic converter
+	####
+
+    javac -d . java/util/TrafficConverter.java
+    java TrafficConverter "g$1_$2" $3
 fi
