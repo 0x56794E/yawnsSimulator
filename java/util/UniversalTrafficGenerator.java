@@ -43,7 +43,7 @@ public class UniversalTrafficGenerator
 	private static void genTraffic(String graphFile)
 		throws IOException
 	{
-		int maxPacket = 100;
+		int maxPacket = 100; //max packet per node
 		int maxStop = 10; //Number of nodes the packet goes thru => incls both ends.
 
 		//Output file name

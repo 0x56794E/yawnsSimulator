@@ -30,7 +30,7 @@ int LP::getTotalProcessedEvent()
 	return totalEvent;
 }
 
-void LP::incEventCount()
+void LP::incEventProcessedCount()
 {
 	++totalEvent;
 }
@@ -77,6 +77,9 @@ int LinkLP::getOtherEnd(int nodeId)
 
 void LinkLP::handleEvent(Event* event, EventQueue &fel, LinkLPMap &lpMap, map<int, pair<int, int>> &rankMap)
 {
+	//Inc num events processed
+	incEventProcessedCount();
+
 	//Rules:
 	//If type == ARR
 	//  => inc stop count 
@@ -172,6 +175,8 @@ int NodeLP::getRandNextStopId(int lastNodeId)
 
 void NodeLP::handleEvent(Event* event, EventQueue &fel, NodeLPMap &lpMap, map<int, pair<int, int>> &rankMap)
 {
+    incEventProcessedCount();
+
 	//Rules:
 	//If event type == DEPARTURE (1) 
 	//  => Schedule Arrive on NEXT stop => create/modify the event!!!

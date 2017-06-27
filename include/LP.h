@@ -26,8 +26,8 @@ class LP
   public:
 	int getId(); 
   	int getTotalProcessedEvent();
-  	void incEventCount();
-	//void handleEvent(Event* event, EventQueue &fel, LPMap &lpMap, map<int, pair<int, int>> &rankMap)
+  	void incEventProcessedCount();
+	
   protected:
 	LP(int id);
 	int id;
