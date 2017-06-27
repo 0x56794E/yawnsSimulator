@@ -38,18 +38,6 @@ SE::SE(int p, int rank, string graph_file_name, MODEL_TYPE type)
 	}
 }
 
-/**
- * Gen next stop on the fly
-
-void SE::handleEvent(Event* event, LP* handler)
-{
-	//NEW STUFF with handler code in LP (May 1, 17)
-	if (this->type == LINK)
-		handler->handleEvent(event, fel, linkLPMap, rankMap);
-	else
-		handler->handleEvent(event, fel, nodeLPMap, rankMap);
-}
-*/
 void SE::runLink()
 {
 
@@ -203,11 +191,22 @@ void SE::receiveMsgs()
 int SE::getTotalProcessedEvent()
 {
 	int sum = 0;
-	for (LPMap::const_iterator it = lpMap.begin(); it != lpMap.end(); ++it)
+	if (type == LINK)
 	{
-		//printf("\tlp %d has %d; SUM = %d\n", it->first, it->second->getTotalProcessedEvent(), sum);
-		sum += it->second->getTotalProcessedEvent();
+		for (LinkLPMap::const_iterator it = linkLPMap.begin(); it != linkLPMap.end(); ++it)
+		{
+			sum += it->second->getTotalProcessedEvent();
+		}
 	}
+	else
+	{
+		for (NodeLPMap::const_iterator it = nodeLPMap.begin(); it != nodeLPMap.end(); ++it)
+		{
+			sum += it->second->getTotalProcessedEvent();
+		}
+
+	}
+
 	//printf("Rank %d has %d\n", rank, sum);
 	return sum;
 }

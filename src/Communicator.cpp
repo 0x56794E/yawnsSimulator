@@ -44,20 +44,6 @@ int done(MPI_Request req)
 	return flag;
 }
 
-int genNextStop(LPMap lpMap, int curStopId)
-{
-	//TODO: rand gen next stop
-	int nextStopId = 0;
-
-	//Get the current LP
-	auto it = lpMap.find(curStopId);
-	if (it != lpMap.end()) //TODO: handle not found case
-		LP* curStop = it->second;
-
-
-	return nextStopId;
-}
-
 void sendMsg(map<int, pair<int, int>> &rankMap, Event* updatedEvent)
 {
 	//Determine the rank of the reciever
@@ -65,12 +51,13 @@ void sendMsg(map<int, pair<int, int>> &rankMap, Event* updatedEvent)
 	for (map<int, pair<int, int>>::const_iterator it = rankMap.begin(); 
 			it != rankMap.end(); ++it)
 	{
-		//key: it->first
-		//value: it->second => pair of (min, max); eg mypair.first, mypair.second
+		//rankMap's structure:
+		//key: it->first == rank
+		//value: it->second == pair of (min, max); eg mypair.first, mypair.second
 		pair<int, int> maxmin = it->second;
 
-		if (event->getCurrentStopId() >= maxmin.first 
-			&& event->getCurrentStopId() <= maxmin.second)
+		if (updatedEvent->getCurrentStopId() >= maxmin.first 
+			&& updatedEvent->getCurrentStopId() <= maxmin.second)
 		{
 			recvRank = it->first;
 			break;
@@ -81,11 +68,11 @@ void sendMsg(map<int, pair<int, int>> &rankMap, Event* updatedEvent)
 	//1. Turn the event into an array of int
 	//Following order: [timestamp, stop_count, stop_passed]
 	int* data = new int[MSG_SIZE](); //dynamic!! Delete it somewhere
-	data[TIMESTAMP] = event->getTimestamp();
-	data[STOP_COUNT] = event->getStopCount();
-	data[STOP_PASSED] = event->getStopPassed();
-	data[RECV_ID] = event->getCurrentStopId();
-	data[LAST_NODE_ID] = event->getLastNodeId();
+	data[TIMESTAMP] = updatedEvent->getTimestamp();
+	data[STOP_COUNT] = updatedEvent->getStopCount();
+	data[STOP_PASSED] = updatedEvent->getStopPassed();
+	data[RECV_ID] = updatedEvent->getCurrentStopId();
+	data[LAST_NODE_ID] = updatedEvent->getLastNodeId();
 
 	//2. Send off the msg
 	MPI_Request req;
@@ -98,7 +85,7 @@ void sendMsg(map<int, pair<int, int>> &rankMap, Event* updatedEvent)
 	//++currentEpochCount; ==> WTH is this???
 
 	//Free mem occupied by event; no longer needed
-	delete event;
+	delete updatedEvent;
 }
 
 /**

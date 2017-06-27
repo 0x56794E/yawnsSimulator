@@ -172,9 +172,9 @@ void loadNodeNeighbors(NodeLP* lp, string graphFileName)
 
 	if (inFile.is_open())
 	{
-		while (inFile >> neiId >> sharedNodeId)
+		while (inFile >> neiId)
 		{
-			lp->addNeighbor(neiId, sharedNodeId);
+			lp->addNeighbor(neiId);
 		}
 
 		inFile.close();
@@ -222,7 +222,7 @@ void doLoadNode(int rank, int p, string fileName, NodeLPMap &lpMap, map<int, pai
 
 	//(2) Load the rank map so all procs know which LP on which proc?
 	//Do all gather on the size
-	int l_size = linkIds.size(); //local
+	int l_size = nodeIds.size(); //local
 	int g_sizes[p]; //global
 	int min, max = -1;
 	MPI_Allgather(&l_size, 1, MPI_INT, &g_sizes, 1, MPI_INT, MPI_COMM_WORLD);

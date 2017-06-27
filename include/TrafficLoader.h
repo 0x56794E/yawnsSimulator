@@ -5,10 +5,10 @@
 
 //own files
 #include "SE.h"
-#include "EventComparator.h"
+#include "Event.h"
 
 using namespace std;
 
-void loadScalefreeTraffic(int rank, int p, string graph_file_name, SE* se); //Used for mult-proc, scalefree graph
+void loadScalefreeTraffic(int rank, int p, string graph_file_name, SE* se, int startEventType);
 
 #endif
