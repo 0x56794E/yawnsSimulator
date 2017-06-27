@@ -3,6 +3,8 @@
 #include "mpi.h"   //For MPI stuff
 #include <time.h> //for time
 #include <chrono>
+#include <string> //for string
+#include <sstream> // for std::stringstream
 
 //My stuff
 #include "SE.h"
@@ -17,12 +19,13 @@ using namespace std::chrono;
  * Initially, ea proc has some x number of packets
  *
  * IMPORTANT: input - graph file name (at argv[1])
+ *		    - model type at argv[2] => if not spec, default to node
  */
 int main(int argc, char* argv[])
 {
 	if (argc < 2)
 	{
-		printf("Usage: mpirun -np <p> ./sim <graph_file_name>\n");
+		printf("Usage: mpirun -np <p> ./sim <graph_file_name> <model type: 0 = node, 1 = link>\n");
 		exit(1);
 	}
 
@@ -39,7 +42,20 @@ int main(int argc, char* argv[])
 	srand(time(NULL) + rank);
 
 	//Create the exec
-	SE se(p, rank, argv[1], NODE);
+	MODEL_TYPE type;
+	int tmp = 0;
+
+	//If type is specifiled
+	if (argc == 3)
+	{
+		std::stringstream convert(argv[2]);
+		if (!(convert >> tmp)) // do the conversion
+			tmp = 0; //if fail, default to 0 == node
+	}
+	printf ("Running %s model...\n", 
+			tmp ? "LINK" : "NODE");
+	type = tmp ? LINK : NODE;
+	SE se(p, rank, argv[1], type);
 	//printf("Rank %d finished setting up\n", rank);
 
 	//Start timer

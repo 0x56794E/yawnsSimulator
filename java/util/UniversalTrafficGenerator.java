@@ -43,7 +43,7 @@ public class UniversalTrafficGenerator
 	private static void genTraffic(String graphFile)
 		throws IOException
 	{
-		int maxPacket = 100; //max packet per node
+		int maxPacket = 5; //max packet per node
 		int maxStop = 10; //Number of nodes the packet goes thru => incls both ends.
 
 		//Output file name
@@ -67,7 +67,6 @@ public class UniversalTrafficGenerator
 			neis = entry.getValue();
 			neiCt = neis.size();
 
-			//Spec the file to write to
 			final List<String> lines = new ArrayList<String>();
 			
 			//For ea node gen some x number of packets
@@ -79,6 +78,7 @@ public class UniversalTrafficGenerator
 			//- randomly select second stop
 			//- gen arrival time
 			//- gen stop count
+			System.out.printf("Generating %d packets for node %s\n", packetCount, nodeId);
 			for (int i = 0; i < packetCount; ++i)
 			{
 				//Second stop Idx

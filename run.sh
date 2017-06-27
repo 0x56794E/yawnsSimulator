@@ -7,8 +7,8 @@
 
 if [ $# -lt 2 ]
 then
-    echo "Usage: ./run.sh <np> <graph file name>"
+    echo "Usage: ./run.sh <np> <graph file name> <model type>"
 else 
     make clean && make sim
-    mpirun -np $1 ./sim $2
+    mpirun -np $1 ./sim $2 $3
 fi
