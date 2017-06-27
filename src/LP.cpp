@@ -170,7 +170,7 @@ int NodeLP::getRandNextStopId(int lastNodeId)
 	return ret;
 }
 
-void NodeLP::handleEvent(Event* event, EventQueue &fel, LinkLPMap &lpMap, map<int, pair<int, int>> &rankMap)
+void NodeLP::handleEvent(Event* event, EventQueue &fel, NodeLPMap &lpMap, map<int, pair<int, int>> &rankMap)
 {
 	//Rules:
 	//If event type == DEPARTURE (1) 

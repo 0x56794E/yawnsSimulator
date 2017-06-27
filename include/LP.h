@@ -57,6 +57,6 @@ class NodeLP : public LP
 	NodeLP(int id);
 	void addNeighbor(int neiId);
 	int getRandNextStopId(int lastNodeId);
-	void handleEvent(Event* event, EventQueue &fel, LinkLPMap &lpMap, map<int, pair<int, int>> &rankMap);
+	void handleEvent(Event* event, EventQueue &fel, NodeLPMap &lpMap, map<int, pair<int, int>> &rankMap);
 };
 #endif
