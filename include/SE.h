@@ -63,6 +63,7 @@ class SE
 	int getTotalProcessedEvent(); //total number of events processed by all LPs on this SE
 	void scheduleEvent(Event*);
 	int peekNextTimestamp(); //If queue is empty, return MAX_INT
+    void outputPerEpochStats();
 };
 
 #endif

@@ -2,6 +2,8 @@
 #include "mpi.h"
 #include <string> //for string
 #include <math.h> //for sqrt
+#include <iostream> //for file stuff
+#include <fstream>  //for file stuff
 
 //own includes
 #include "SE.h"
@@ -303,4 +305,26 @@ int SE::peekNextTimestamp()
 		return MAX_INT;
 	else
 		return fel.top()->getTimestamp();
+}
+
+/**
+ * Print to file
+ * - File name format:
+ * - Line format: <epoch number>,<max>,<min>,<mean>,<std dev>
+ */
+void SE::outputPerEpochStats()
+{
+    ofstream myfile;
+    myfile.open ("perEpochStats.txt");
+    myfile << "Epoch Number,Max,Min,Mean,Std Dev\n";
+
+    for (unsigned i = 0; i < perEpochStats.size(); ++i)
+    {
+        myfile << i << ","
+                << perEpochStats[i].max << ","
+                << perEpochStats[i].min << ","
+                << perEpochStats[i].avg << ","
+                << perEpochStats[i].stdDev << "\n";
+    }
+    myfile.close();
 }

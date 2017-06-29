@@ -75,13 +75,16 @@ int main(int argc, char* argv[])
 	
 	//************************
 	//PER-EPOCH measurement    
+    // this will affect parallelism of link model.
+    //DO NOT leave this on when measuring parallelism
 	//************************
     
-
+    se.outputPerEpochStats();
 	//************************
 	//CONCURRENCY measurement
 	//************************
 	//Count total events/msgs
+/*
 	int l_total = se.getTotalProcessedEvent();
 	int gl_total;
 	MPI_Reduce(&l_total, &gl_total, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
@@ -89,7 +92,7 @@ int main(int argc, char* argv[])
 	if (rank == 0)
 		printf("\n***SUMMARY:\nEventCount = %d (local=%d); Time = %.5f ms; Concurrency ~= %.5f event/second\n",
 				gl_total, l_total,  time_ms, gl_total * 1000.0 / time_ms);
-
+*/
 	//Count total msg sent and percentage of interproc comm
 	//summarizeMsgCount(rank);
 	//************************
