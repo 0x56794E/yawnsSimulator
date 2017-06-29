@@ -26,7 +26,7 @@ const int STOP_PASSED = 2;
 const int RECV_ID = 3;
 const int LAST_NODE_ID = 4;
 
-void newEpoch();
+void onEpochEnd();
 
 void sendMsg(map<int, pair<int, int>> &rankMap, Event* updatedEvent);
 

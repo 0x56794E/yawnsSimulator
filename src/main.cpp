@@ -72,18 +72,27 @@ int main(int argc, char* argv[])
     	time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count(); 
 	}
 
+	
+	//************************
+	//PER-EPOCH measurement    
+	//************************
+    
+
+	//************************
+	//CONCURRENCY measurement
+	//************************
 	//Count total events/msgs
 	int l_total = se.getTotalProcessedEvent();
 	int gl_total;
 	MPI_Reduce(&l_total, &gl_total, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
 
 	if (rank == 0)
-		printf("\n***SUMMARY:\nTime = %.5f ms; EventCount = %d (local=%d); Concurrency ~= %.5f event/second\n",
-				time_ms, gl_total, l_total,  gl_total * 1000.0 / time_ms);
+		printf("\n***SUMMARY:\nEventCount = %d (local=%d); Time = %.5f ms; Concurrency ~= %.5f event/second\n",
+				gl_total, l_total,  time_ms, gl_total * 1000.0 / time_ms);
 
 	//Count total msg sent and percentage of interproc comm
-	summarizeMsgCount(rank);
-
+	//summarizeMsgCount(rank);
+	//************************
 
 	MPI_Finalize();
 	return 0; //safe and sound

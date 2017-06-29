@@ -17,6 +17,7 @@ LP::LP(int id)
 {
 	LP::id = id;
 	LP::totalEvent = 0;
+    LP::curEpochCount = 0;
 	srand(time(NULL));
 }
 
@@ -30,9 +31,23 @@ int LP::getTotalProcessedEvent()
 	return totalEvent;
 }
 
-void LP::incEventProcessedCount()
+int LP::getCurEpochEventCount()
 {
+    return curEpochCount;
+}
+
+void LP::resetCurEpochEventCount()
+{
+    curEpochCount = 0;
+}
+
+void LP::onHandleEvent()
+{
+    //inc total event proc
 	++totalEvent;
+
+    //inc event count in this epoch
+    ++curEpochCount;
 }
 
 /***************************
@@ -77,8 +92,7 @@ int LinkLP::getOtherEnd(int nodeId)
 
 void LinkLP::handleEvent(Event* event, EventQueue &fel, LinkLPMap &lpMap, map<int, pair<int, int>> &rankMap)
 {
-	//Inc num events processed
-	incEventProcessedCount();
+    onHandleEvent();
 
 	//Rules:
 	//If type == ARR
@@ -175,7 +189,7 @@ int NodeLP::getRandNextStopId(int lastNodeId)
 
 void NodeLP::handleEvent(Event* event, EventQueue &fel, NodeLPMap &lpMap, map<int, pair<int, int>> &rankMap)
 {
-    incEventProcessedCount();
+    onHandleEvent();
 
 	//Rules:
 	//If event type == DEPARTURE (1) 

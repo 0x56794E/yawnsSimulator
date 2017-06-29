@@ -15,7 +15,7 @@ int currentEpochCount = 0;
 int totalMsgCount = 0;
 int interProcCount = 0;
 
-void newEpoch()
+void onEpochEnd()
 {
 	//clear the first lastEpochCount msg in the vector
 	int index = 0;

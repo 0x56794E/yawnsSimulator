@@ -1,6 +1,8 @@
 #include <limits> //For max val of int
 #include "mpi.h"
 #include <string> //for string
+#include <math.h> //for sqrt
+
 //own includes
 #include "SE.h"
 #include "TrafficLoader.h"
@@ -11,6 +13,92 @@ using namespace std;
 const int MAX_INT = std::numeric_limits<int>::max();
 const int INTENDED_P_COUNT = 4;
 
+/***********
+ * PRIVATE
+ **********/
+static void compStats(Stats &stats, double &var, double &mean, int n, int curLPCount)
+{
+    //update sum
+    stats.sum += curLPCount;
+
+    //update max
+    if (curLPCount > stats.max)
+        stats.max = curLPCount;
+
+    //update min
+    if (curLPCount < stats.min)
+        stats.min = curLPCount;
+
+    //update var and mean
+    if (n == 1) //first iter
+    {
+        mean = curLPCount;
+        var = 0;
+    }
+    else     
+    {
+        //update var using old mean
+        var = (n - 2) * var / (n - 1) + (curLPCount - mean) * (curLPCount - mean) / n; 
+        
+        //update mean               
+        mean = ((n - 1) * mean + curLPCount) / n;
+    }
+}
+
+void SE::nextEpoch()
+{
+    //On Communicator.
+    //reset msg for next epoch
+	onEpochEnd();
+
+    //Iter thru LPs to collect stats
+    //max, min, avg, std dev
+    Stats stats;
+    stats.max = 0;
+    stats.min = MAX_INT;
+    stats.sum = 0;
+    stats.avg = 0;
+    stats.stdDev = 0;
+
+    double var = 0, mean = 0, n = 1;
+    
+    //TODO: hacky... for now
+    if (type == NODE)
+    {
+        //work on nodeLPMap
+        for(NodeLPMap::const_iterator it = nodeLPMap.begin(); it != nodeLPMap.end(); ++it)
+        {
+            //key = it->first
+            //value = iter->second
+            compStats(stats, var, mean, n, it->second->getCurEpochEventCount());
+            ++n;
+        }
+    }
+    else
+    {
+        //work on linkLPMap 
+        for(LinkLPMap::const_iterator it = linkLPMap.begin(); it != linkLPMap.end(); ++it)
+        {
+            //key = it->first
+            //value = iter->second
+            compStats(stats, var, mean, n, it->second->getCurEpochEventCount());
+            ++n;
+        }
+    }
+
+    stats.avg = mean;
+    stats.stdDev = sqrt(var);
+    
+    //Add stats for this epoch
+    (this->perEpochStats).push_back(stats);
+
+    //Advance the epoch
+    this->curEpoch = this->curEpoch + 1;
+    
+	//Reset msgCount
+	for (int i = 0; i < p; ++i)
+		msgCount[i] = 0;
+}
 
 /******************
  * PUBLIC members *
@@ -20,6 +108,7 @@ SE::SE(int p, int rank, string graph_file_name, MODEL_TYPE type)
 	this->p = p;
 	this->rank = rank;
 	this->type = type;
+    this->curEpoch = 0;
 
 	//init msg count to other procs
 	msgCount = new int[p];
@@ -42,7 +131,7 @@ void SE::runLink()
 {
 
 	int local_done = 0, global_done = 0;
-	int global_lbts, epoch = 0;
+	int global_lbts;
 	LP* lp;
 
 	while (!local_done || !global_done)
@@ -63,16 +152,12 @@ void SE::runLink()
 		while (!(this->fel).empty() && this->peekNextTimestamp() <= global_lbts)
 		{
 			Event* event = this->nextEvent();
-			linkLPMap[event->getCurrentStopId()]->handleEvent(event, fel, linkLPMap, rankMap);
+			linkLPMap[event->getCurrentStopId()]
+                    ->handleEvent(event, fel, linkLPMap, rankMap);
 		}
 
-		//Reset msgCount
-		for (int i = 0; i < p; ++i)
-			msgCount[i] = 0;
-
 		//Advance epoch count
-		++epoch;
-		newEpoch();
+		this->nextEpoch();
 
 		//Determine if all LPs accross all procs are done
 		local_done = (this->fel).empty();
@@ -85,7 +170,7 @@ void SE::runNode()
 {
 
 	int local_done = 0, global_done = 0;
-	int global_lbts, epoch = 0;
+	int global_lbts;
 	LP* lp;
 
 	while (!local_done || !global_done)
@@ -106,16 +191,12 @@ void SE::runNode()
 		while (!(this->fel).empty() && this->peekNextTimestamp() <= global_lbts)
 		{
 			Event* event = this->nextEvent();
-			nodeLPMap[event->getCurrentStopId()]->handleEvent(event, fel, nodeLPMap, rankMap);
+			nodeLPMap[event->getCurrentStopId()]
+                    ->handleEvent(event, fel, nodeLPMap, rankMap);
 		}
 
-		//Reset msgCount
-		for (int i = 0; i < p; ++i)
-			msgCount[i] = 0;
-
 		//Advance epoch count
-		++epoch;
-		newEpoch();
+		this->nextEpoch();
 
 		//Determine if all LPs accross all procs are done
 		local_done = (this->fel).empty();

@@ -26,12 +26,17 @@ class LP
   public:
 	int getId(); 
   	int getTotalProcessedEvent();
-  	void incEventProcessedCount();
+    int getCurEpochEventCount();
+    void resetCurEpochEventCount();
 	
   protected:
 	LP(int id);
+
 	int id;
 	int totalEvent; //Total event processed
+	int curEpochCount; //event processed in current epoch
+
+  	void onHandleEvent();
 };
 
 class LinkLP : public LP
