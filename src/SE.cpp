@@ -67,24 +67,30 @@ void SE::nextEpoch()
     //TODO: hacky... for now
     if (type == NODE)
     {
-        //work on nodeLPMap
+        //loop thru LPs in nodeLPMap
         for(NodeLPMap::const_iterator it = nodeLPMap.begin(); it != nodeLPMap.end(); ++it)
         {
             //key = it->first
             //value = iter->second
             compStats(stats, var, mean, n, it->second->getCurEpochEventCount());
             ++n;
+
+            //reset the event count for this LP
+            it->second->resetCurEpochEventCount();
         }
     }
     else
     {
-        //work on linkLPMap 
+        //loop thru linkLPMap 
         for(LinkLPMap::const_iterator it = linkLPMap.begin(); it != linkLPMap.end(); ++it)
         {
             //key = it->first
             //value = iter->second
             compStats(stats, var, mean, n, it->second->getCurEpochEventCount());
             ++n;
+
+            //reset the event count for this LP
+            it->second->resetCurEpochEventCount();
         }
     }
 
